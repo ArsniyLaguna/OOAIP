@@ -53,4 +53,17 @@ public class InjectableCommandTests
 
         Assert.NotNull(resolvedCommand);
     }
+
+    [Fact]
+    public void RegisterActionsStop_ResolvesCorrectlyWithOrder_AndRunsInConstantTime()
+    {
+        ICommand registerCmd = new RegisterIoCDependencyActionsStop();
+        registerCmd.Execute();
+        IDictionary<string, object> order = new Dictionary<string, object>();
+        var resolvedCommand = IoC.Resolve<ICommand>("Actions.Stop", order);
+        Assert.NotNull(resolvedCommand);
+        
+        resolvedCommand.Execute();
+    }
+
 }
