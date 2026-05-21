@@ -25,4 +25,19 @@ public class InjectableCommandTests
 
         Assert.Throws<Exception>(() => injectable.Execute());
     }
+    
+    [Fact]
+    public void RegisterCommandInjectable_ResolvesToAllRequiredTypes()
+    {
+        ICommand registerCmd = new RegisterDependencyCommandInjectableCommand();
+        registerCmd.Execute();
+
+        var resolveAsICommand = IoC.Resolve<ICommand>("Commands.CommandInjectable");
+        var resolveAsInjectable = IoC.Resolve<ICommandInjectable>("Commands.CommandInjectable");
+        var resolveAsClass = IoC.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
+
+        Assert.NotNull(resolveAsICommand);
+        Assert.NotNull(resolveAsInjectable);
+        Assert.NotNull(resolveAsClass);
+    }
 }
