@@ -43,4 +43,16 @@ public class InjectableCommandTests
         Assert.NotNull(resolveAsInjectable);
         Assert.NotNull(resolveAsClass);
     }
+
+    [Fact]
+    public void RegisterActionsStart_ResolvesCorrectlyWithOrder()
+    {
+        ICommand registerCmd = new RegisterIoCDependencyActionsStart();
+        registerCmd.Execute();
+
+        IDictionary<string, object> order = new Dictionary<string, object>();
+        var resolvedCommand = IoC.Resolve<ICommand>("Actions.Start", order);
+
+        Assert.NotNull(resolvedCommand);
+    }
 }
