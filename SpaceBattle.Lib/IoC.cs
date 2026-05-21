@@ -9,8 +9,7 @@ public static class IoC
 
     public static void Register(string key, Func<object[], object> strategy)
     {
-        if (string.IsNullOrEmpty(key)) throw new ArgumentException("Ключ не может быть пустым.", nameof(key));
-        _strategies[key] = strategy ?? throw new ArgumentNullException(nameof(strategy));
+        _strategies[key] = strategy;
     }
 
     public static T Resolve<T>(string key, params object[] args)
@@ -19,6 +18,6 @@ public static class IoC
         {
             return (T)strategy(args);
         }
-        throw new KeyNotFoundException($"Зависимость '{key}' не зарегистрирована в IoC-контейнере.");
+        throw new Exception($"Зависимость {key} не найдена.");
     }
 }
