@@ -25,4 +25,22 @@ public class InjectableCommandTests
 
         Assert.Throws<Exception>(() => injectable.Execute());
     }
+
+    [Fact]
+    public void RegisterCommandInjectable_ResolvesToAllRequiredTypes()
+    {
+        //Вызываем команду регистрации зависимости
+        ICommand registerCmd = new RegisterDependencyCommandInjectableCommand();
+        registerCmd.Execute();
+
+        // Проверяем критерий приемки разрешение работает без исключений для всех трех типов
+        var resolveAsICommand = IoC.Resolve<ICommand>("Commands.CommandInjectable");
+        var resolveAsInjectable = IoC.Resolve<ICommandInjectable>("Commands.CommandInjectable");
+        var resolveAsClass = IoC.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
+
+        // проверяем что объекты успешно создались
+        Assert.NotNull(resolveAsICommand);
+        Assert.NotNull(resolveAsInjectable);
+        Assert.NotNull(resolveAsClass);
+    }
 }
