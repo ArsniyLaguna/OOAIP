@@ -26,11 +26,11 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        dotnet test SpaceBattle.Tests/SpaceBattle.Tests.csproj \
+        dotnet test SpaceBattle.slnx \
         --configuration Debug \
         /p:CollectCoverage=true \
         /p:CoverletOutputFormat=cobertura \
-        /p:CoverletOutput=./coverage.cobertura.xml
+        /p:CoverletOutput=../coverage.cobertura.xml
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
