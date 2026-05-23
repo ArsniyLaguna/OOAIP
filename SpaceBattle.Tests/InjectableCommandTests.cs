@@ -25,7 +25,7 @@ public class InjectableCommandTests
 
         Assert.Throws<Exception>(() => injectable.Execute());
     }
-    
+
     [Fact]
     public void RegisterCommandInjectable_ResolvesToAllRequiredTypes()
     {
