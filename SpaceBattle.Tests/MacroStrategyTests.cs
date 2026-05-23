@@ -27,7 +27,7 @@ public class MacroStrategyTests
         IoC.Resolve<object>("IoC.Register", "SubCommand2", strategyCmd2.Object);
 
         var macroStrategy = new CreateMacroCommandStrategy("Specs.Macro.Test");
-        
+
         var resolvedMacro = (ICommand)macroStrategy.Invoke(new object[] { "игровой_объект" });
 
         Assert.NotNull(resolvedMacro);
