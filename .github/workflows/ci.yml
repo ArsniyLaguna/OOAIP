@@ -23,12 +23,14 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore SpaceBattle.slnx
-
-    - name: Build project
-      run: dotnet build SpaceBattle.slnx --no-restore --configuration Release
-
+      
     - name: Run tests with coverage
-      run: dotnet test SpaceBattle.slnx --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage.cobertura.xml
+      run: |
+        dotnet test SpaceBattle.Tests/SpaceBattle.Tests.csproj \
+        --configuration Debug \
+        /p:CollectCoverage=true \
+        /p:CoverletOutputFormat=cobertura \
+        /p:CoverletOutput=./coverage.cobertura.xml
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
