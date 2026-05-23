@@ -7,7 +7,7 @@ public class RegisterIoCDependencyActionsStop : ICommand
         IoC.Register("Actions.Stop", (args) =>
         {
             var order = (IDictionary<string, object>)args[0];
-            
+
             return new EmptyCommand();
         });
     }

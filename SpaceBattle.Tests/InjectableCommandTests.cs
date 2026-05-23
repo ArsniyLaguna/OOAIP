@@ -25,7 +25,7 @@ public class InjectableCommandTests
 
         Assert.Throws<Exception>(() => injectable.Execute());
     }
-    
+
     [Fact]
     public void RegisterCommandInjectable_ResolvesToAllRequiredTypes()
     {
@@ -62,7 +62,7 @@ public class InjectableCommandTests
         IDictionary<string, object> order = new Dictionary<string, object>();
         var resolvedCommand = IoC.Resolve<ICommand>("Actions.Stop", order);
         Assert.NotNull(resolvedCommand);
-        
+
         resolvedCommand.Execute();
     }
 
