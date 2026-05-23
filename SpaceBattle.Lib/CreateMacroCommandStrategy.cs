@@ -1,4 +1,5 @@
 namespace SpaceBattle.Lib;
+
 public class CreateMacroCommandStrategy : IStrategy
 {
     private readonly string _commandSpec;

@@ -1,4 +1,5 @@
 namespace SpaceBattle.Lib;
+
 public static class IoC
 {
     private static readonly Dictionary<string, IStrategy> _strategies = new();
