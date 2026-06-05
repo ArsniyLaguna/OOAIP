@@ -116,4 +116,93 @@ public class FirePhotonCommandTests
         var photons = repository.GetAll().OfType<Photon>().ToList();
         Assert.NotEqual(photons[0].Id, photons[1].Id);
     }
+
+    [Fact]
+    public void Photon_Update_ShouldMovePhoton()
+    {
+        // Arrange
+        var photon = new Photon(1, (0, 0), (1, 1), 5);
+        var initialPosition = photon.Position;
+
+        // Act
+        photon.Update();
+
+        // Assert
+        Assert.Equal((5, 5), photon.Position);
+        Assert.NotEqual(initialPosition, photon.Position);
+    }
+
+    [Fact]
+    public void Photon_MultipleUpdates_ShouldMovePhotonMultipleTimes()
+    {
+        // Arrange
+        var photon = new Photon(1, (0, 0), (1, 0), 2);
+
+        // Act
+        photon.Update();
+        photon.Update();
+        photon.Update();
+
+        // Assert
+        Assert.Equal((6, 0), photon.Position);
+    }
+
+    [Fact]
+    public void Photon_NegativeDirection_ShouldMoveInNegativeDirection()
+    {
+        // Arrange
+        var photon = new Photon(1, (10, 10), (-1, -1), 2);
+
+        // Act
+        photon.Update();
+
+        // Assert
+        Assert.Equal((8, 8), photon.Position);
+    }
+
+    [Fact]
+    public void Photon_InvalidSpeed_ShouldThrowArgumentException()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() =>
+            new Photon(1, (0, 0), (1, 0), 0));
+    }
+
+    [Fact]
+    public void Spaceship_FirePhoton_ShouldReturnPhoton()
+    {
+        // Arrange
+        var spaceship = new Spaceship(1, (10, 20));
+
+        // Act
+        var photon = spaceship.FirePhoton((1, 0));
+
+        // Assert
+        Assert.NotNull(photon);
+        Assert.IsType<Photon>(photon);
+    }
+
+    [Fact]
+    public void Spaceship_FireMultiplePhotons_ShouldHaveDifferentIds()
+    {
+        // Arrange
+        var spaceship = new Spaceship(1, (0, 0));
+
+        // Act
+        var photon1 = spaceship.FirePhoton((1, 0));
+        var photon2 = spaceship.FirePhoton((0, 1));
+
+        // Assert
+        Assert.NotEqual(photon1.Id, photon2.Id);
+    }
+
+    [Fact]
+    public void Spaceship_Update_ShouldNotThrowException()
+    {
+        // Arrange
+        var spaceship = new Spaceship(1, (0, 0));
+
+        // Act & Assert
+        spaceship.Update();
+    }
 }
