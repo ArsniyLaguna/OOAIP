@@ -1,4 +1,5 @@
 namespace SpaceBattle.Lib;
+
 public class Photon : IGameObject
 {
     private readonly int _speed;
