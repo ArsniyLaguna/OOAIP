@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace SpaceBattle.Lib;
 
 public class RegisterIoCDependencyActionsStart : ICommand
@@ -7,7 +10,17 @@ public class RegisterIoCDependencyActionsStart : ICommand
         IoC.Register("Actions.Start", (args) =>
         {
             var order = (IDictionary<string, object>)args[0];
-            return new EmptyCommand();
+
+            var targetCommand = order.ContainsKey("Command") ? (ICommand)order["Command"] : new EmptyCommand();
+            var queue = (Queue<ICommand>)order["Queue"];
+
+            var injectableCommand = IoC.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
+        
+            injectableCommand.Inject(targetCommand);
+
+            queue.Enqueue(injectableCommand);
+            
+            return injectableCommand;
         });
     }
 }
