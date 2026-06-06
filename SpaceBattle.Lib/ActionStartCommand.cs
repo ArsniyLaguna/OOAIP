@@ -18,6 +18,7 @@ public class ActionStartCommand : ICommand
         var queue = (Queue<ICommand>)_order["Queue"];
 
         var injectableCommand = IoC.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
+        
         injectableCommand.Inject(targetCommand);
 
         queue.Enqueue(injectableCommand);

@@ -10,6 +10,8 @@ public class RegisterIoCDependencyActionsStart : ICommand
         IoC.Register("Actions.Start", (args) =>
         {
             var order = (IDictionary<string, object>)args[0];
+            
+            //возвращаем созданную команду старта
             return new ActionStartCommand(order);
         });
     }
