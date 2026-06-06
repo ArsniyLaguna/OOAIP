@@ -2,17 +2,13 @@ namespace SpaceBattle.Lib;
 
 public class RegisterIoCDependencyMacroCommand : ICommand
 {
-    private class MacroStrategy : IStrategy
+    public void Execute()
     {
-        public object Invoke(params object[] args)
+        // Регистрируем через Func, который возвращает MacroCommand
+        IoC.Register("Commands.Macro", (args) =>
         {
             var commands = (IEnumerable<ICommand>)args[0];
             return new MacroCommand(commands);
-        }
-    }
-
-    public void Execute()
-    {
-        IoC.Resolve<object>("IoC.Register", "Commands.Macro", new MacroStrategy());
+        });
     }
 }
