@@ -29,7 +29,7 @@ public class Game
             {
                 command.Execute();
             }
-            catch (Exception _)
+            catch (Exception)
             {
                 
             }
