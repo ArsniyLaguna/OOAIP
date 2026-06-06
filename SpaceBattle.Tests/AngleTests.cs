@@ -1,46 +1,104 @@
 using System;
+using SpaceBattle.Lib;
+using Xunit;
 
-namespace SpaceBattle.Lib;
+namespace SpaceBattle.Tests;
 
-public class Angle
+public class AngleTests
 {
-    public static int Denominator { get; set; } = 8;
-    public int Numerator { get; }
-
-    public Angle(int numerator)
+    [Fact]
+    public void Angle_Addition_ReturnsCorrectSum_Criterion1()
     {
-        Numerator = ((numerator % Denominator) + Denominator) % Denominator;
+        Angle.Denominator = 8;
+        var a1 = new Angle(5);
+        var a2 = new Angle(7);
+        var result = a1 + a2;
+        Assert.Equal(4, result.Numerator);
     }
 
-    public static Angle operator +(Angle a, Angle b)
+    [Fact]
+    public void Angle_Normalization_WorksWithNegativeNumbers()
     {
-        return new Angle(a.Numerator + b.Numerator);
+        Angle.Denominator = 8;
+        var negativeAngle = new Angle(-1);
+        Assert.Equal(7, negativeAngle.Numerator);
     }
 
-    public static implicit operator double(Angle angle)
+    [Fact]
+    public void Angle_EqualsMethod_ReturnsTrueForEquivalentAngles_Criterion2()
     {
-        return (double)angle.Numerator / Denominator * 2 * Math.PI;
+        Angle.Denominator = 8;
+        var a1 = new Angle(15);
+        var a2 = new Angle(23);
+        Assert.True(a1.Equals(a2));
     }
 
-    public override bool Equals(object? obj)
+    [Fact]
+    public void Angle_EqualsMethod_ReturnsFalseForNullOrDifferentType()
     {
-        var objectAngle = obj as Angle;
+        Angle.Denominator = 8;
+        var angle = new Angle(5);
 
-        return objectAngle is not null && Numerator == objectAngle.Numerator;
+        Assert.False(angle.Equals(null));
+        Assert.False(angle.Equals("Not an Angle object"));
     }
 
-    public override int GetHashCode()
+    [Fact]
+    public void Angle_OperatorEquals_ReturnsTrueForEquivalentAngles_Criterion3()
     {
-        return Numerator.GetHashCode();
+        Angle.Denominator = 8;
+        var a1 = new Angle(15);
+        var a2 = new Angle(23);
+        Assert.True(a1 == a2);
     }
 
-    public static bool operator ==(Angle? a, Angle? b)
+    [Fact]
+    public void Angle_OperatorEquals_WorksCorrectlyWithNullValues()
     {
-        return ReferenceEquals(a, b) || (a is not null && a.Equals(b));
+        Angle.Denominator = 8;
+        Angle? a1 = null;
+        Angle? a2 = null;
+        Angle a3 = new Angle(5);
+
+        Assert.True(a1 == a2);
+        Assert.False(a3 == a1);
+        Assert.False(a1 == a3);
     }
 
-    public static bool operator !=(Angle? a, Angle? b)
+    [Fact]
+    public void Angle_EqualsMethod_ReturnsFalseForDifferentAngles_Criterion4()
     {
-        return !(a == b);
+        Angle.Denominator = 8;
+        var a1 = new Angle(1);
+        var a2 = new Angle(2);
+        Assert.False(a1.Equals(a2));
+    }
+
+    [Fact]
+    public void Angle_OperatorNotEquals_ReturnsTrueForDifferentAngles_Criterion5()
+    {
+        Angle.Denominator = 8;
+        var a1 = new Angle(1);
+        var a2 = new Angle(2);
+        Assert.True(a1 != a2);
+    }
+
+    [Fact]
+    public void Angle_HasHashCode_Criterion6()
+    {
+        Angle.Denominator = 8;
+        var angle = new Angle(5);
+        Assert.NotEqual(0, angle.GetHashCode());
+    }
+
+    [Fact]
+    public void Angle_MathCosAndSin_WorksDirectlyWithoutExplicitCast()
+    {
+        Angle.Denominator = 8;
+        var angle = new Angle(0);
+        double cosValue = Math.Cos(angle);
+        double sinValue = Math.Sin(angle);
+        Assert.Equal(1.0, cosValue, 5);
+        Assert.Equal(0.0, sinValue, 5);
     }
 }
