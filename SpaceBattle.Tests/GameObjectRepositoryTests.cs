@@ -14,7 +14,7 @@ public class GameObjectRepositoryTests
         var repository = new GameObjectRepository();
         var gameObjectMock = new Mock<IGameObject>();
         gameObjectMock.SetupGet(g => g.Id).Returns(1);
-        gameObjectMock.SetupProperty(g => g.Position, (10, 20));
+        // ← УДАЛИЛИ эту строку: gameObjectMock.SetupProperty(g => g.Position, (10, 20));
 
         repository.Add(gameObjectMock.Object);
         var result = repository.Get(1);
@@ -27,7 +27,6 @@ public class GameObjectRepositoryTests
     public void Add_NullGameObject_ShouldThrowArgumentNullException()
     {
         var repository = new GameObjectRepository();
-
         Assert.Throws<ArgumentNullException>(() => repository.Add(null!));
     }
 
@@ -49,9 +48,7 @@ public class GameObjectRepositoryTests
     public void Get_NonExistingId_ShouldReturnNull()
     {
         var repository = new GameObjectRepository();
-
         var result = repository.Get(999);
-
         Assert.Null(result);
     }
 
@@ -91,9 +88,7 @@ public class GameObjectRepositoryTests
     public void GetAll_EmptyRepository_ShouldReturnEmptyList()
     {
         var repository = new GameObjectRepository();
-
         var result = repository.GetAll().ToList();
-
         Assert.Empty(result);
     }
 
