@@ -15,6 +15,7 @@ namespace SpaceBattle.Lib
                 return (T)strategy(args);
             }
             throw new Exception($"Зависимость '{key}' не зарегистрирована.");
+            throw new Exception($"Зависимость '{key}' не найдена.");
         }
 
         public static void Register(string key, Func<object[], object> strategy)
