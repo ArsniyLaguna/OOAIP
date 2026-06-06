@@ -62,8 +62,10 @@ public class InjectableCommandTests
         };
 
         var resolvedCommand = IoC.Resolve<ICommand>("Actions.Start", order);
-
         Assert.NotNull(resolvedCommand);
+        
+        resolvedCommand.Execute();
+
         Assert.Single(commandQueue);
     }
 
@@ -92,5 +94,6 @@ public class InjectableCommandTests
 
         injectable.Execute();
         movingMock.Verify(m => m.Execute(), Times.Once);
+        
     }
 }

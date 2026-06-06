@@ -10,20 +10,7 @@ public class RegisterIoCDependencyActionsStop : ICommand
         IoC.Register("Actions.Stop", (args) =>
         {
             var order = (IDictionary<string, object>)args[0];
-
-            var injectableCommand = (ICommandInjectable)order["TargetCommand"];
-
-            return new ActionCommand(() =>
-            {
-                injectableCommand.Inject(new EmptyCommand());
-            });
+            return new ActionStopCommand(order);
         });
     }
-}
-
-public class ActionCommand : ICommand
-{
-    private readonly Action _action;
-    public ActionCommand(Action action) => _action = action;
-    public void Execute() => _action();
 }
