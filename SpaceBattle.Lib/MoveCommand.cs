@@ -11,7 +11,6 @@ namespace SpaceBattle.Lib
 
         public void Execute()
         {
-         
         }
     }
 }

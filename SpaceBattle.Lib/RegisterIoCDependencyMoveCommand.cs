@@ -1,14 +1,15 @@
-namespace SpaceBattle.Lib;
-
-public class RegisterIoCDependencyMoveCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    public void Execute()
+    public class RegisterIoCDependencyMoveCommand : ICommand
     {
-        IoC.Register("Commands.Move", (args) =>
+        public void Execute()
         {
-            var obj = args[0];
-            var movingObject = IoC.Resolve<IMovingObject>("Adapters.IMovingObject", obj);
-            return new MoveCommand(movingObject);
-        });
+            IoC.Register("Commands.Move", (args) =>
+            {
+                var obj = args[0];
+                var movingObject = IoC.Resolve<IMovingObject>("Adapters.IMovingObject", obj);
+                return new MoveCommand(movingObject);
+            });
+        }
     }
 }
