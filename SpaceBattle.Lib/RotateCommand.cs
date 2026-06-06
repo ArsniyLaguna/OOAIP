@@ -1,24 +1,17 @@
-namespace SpaceBattle.Lib;
-
-public class RotateCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    private readonly IRotatable _rotatable;
-
-    public RotateCommand(IRotatable rotatable)
+    public class RotateCommand : ICommand
     {
-        _rotatable = rotatable;
-    }
+        private readonly IRotatable _rotatable;
 
-    public void Execute()
-    {
-        Angle currentAngle = _rotatable.Angle;
-        Angle velocity = _rotatable.AngularVelocity;
+        public RotateCommand(IRotatable rotatable)
+        {
+            _rotatable = rotatable;
+        }
 
-        _rotatable.Angle = currentAngle + velocity;
+        public void Execute()
+        {
+            _rotatable.Angle = _rotatable.Angle + _rotatable.AngularVelocity;
+        }
     }
-public class RotateCommand : ICommand
-{
-    private readonly IRotatable _rotatable;
-    public RotateCommand(IRotatable rotatable) => _rotatable = rotatable;
-    public void Execute() { }
 }
