@@ -67,8 +67,10 @@ public class FirePhotonCommandTests
         var repository = new GameObjectRepository();
 
         // Act & Assert
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<ArgumentNullException>(() =>
             new FirePhotonCommand(null, (1, 0), repository));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     [Fact]
@@ -78,8 +80,10 @@ public class FirePhotonCommandTests
         var spaceship = new Spaceship(1, (0, 0));
 
         // Act & Assert
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<ArgumentNullException>(() =>
             new FirePhotonCommand(spaceship, (1, 0), null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     [Fact]
