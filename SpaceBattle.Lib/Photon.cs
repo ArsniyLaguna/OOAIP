@@ -1,18 +1,18 @@
 namespace SpaceBattle.Lib;
+
 public class Photon : IGameObject
 {
+    private readonly (int X, int Y) _direction;
     private readonly int _speed;
-    private (int X, int Y) _direction;
 
     public int Id { get; }
     public (int X, int Y) Position { get; set; }
 
-
     public Photon(int id, (int X, int Y) position, (int X, int Y) direction, int speed = 1)
     {
         if (speed <= 0)
-            throw new ArgumentException("Speed must be positive", nameof(speed));
-
+            throw new ArgumentException("Speed must be greater than 0", nameof(speed));
+        
         Id = id;
         Position = position;
         _direction = direction;
@@ -25,5 +25,4 @@ public class Photon : IGameObject
     }
 
     public (int X, int Y) GetDirection() => _direction;
-    public int GetSpeed() => _speed;
 }
