@@ -26,9 +26,9 @@ public class GameObjectRepositoryTests
     {
         var repository = new GameObjectRepository();
 
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8625
         Assert.Throws<ArgumentNullException>(() => repository.Add(null));
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning restore CS8625 
     }
 
     [Fact]
