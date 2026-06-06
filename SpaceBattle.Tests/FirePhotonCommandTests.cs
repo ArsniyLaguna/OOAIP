@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using SpaceBattle.Lib;
 using Xunit;
@@ -9,63 +10,79 @@ namespace SpaceBattle.Tests;
 public class FirePhotonCommandTests
 {
     [Fact]
-    public void Execute_ShouldCreatePhotonAndEnqueueMovementCommand()
+    public void Execute_ShouldCreatePhoton_AddToRepository_AndEnqueueMovement()
     {
-        var shooterMock = new Mock<IShootable>();
-        shooterMock.SetupGet(s => s.Position).Returns((10, 20));
-        shooterMock.SetupGet(s => s.Direction).Returns((1, 0));
-
+        // Arrange
+        var repository = new GameObjectRepository();
+        var spaceship = new Spaceship(1, (10, 20));
+        var direction = (1, 0);
         var gameQueue = new Queue<ICommand>();
-
-        var photonMock = new Mock<IGameObject>();
+        
         var moveCommandMock = new Mock<ICommand>();
 
-        IoC.Register("Game.CreatePhoton", args => photonMock.Object);
-        IoC.Register("Commands.Move", args => moveCommandMock.Object);
+        // Передаем лямбду в качестве фабрики команд движения
+        var command = new FirePhotonCommand(
+            spaceship, 
+            direction, 
+            repository, 
+            gameQueue, 
+            photon => moveCommandMock.Object
+        );
 
-        var command = new FirePhotonCommand(shooterMock.Object, gameQueue);
-
+        // Act
         command.Execute();
 
+        // Assert
+        var photon = repository.GetAll().OfType<Photon>().FirstOrDefault();
+        Assert.NotNull(photon);
+        Assert.Equal(spaceship.Position, photon.Position);
+        
+        // Проверяем, что движение торпеды улетело в игровую очередь
         Assert.Single(gameQueue);
         Assert.Equal(moveCommandMock.Object, gameQueue.Peek());
     }
 
     [Fact]
-    public void Constructor_NullShooter_ShouldThrowArgumentNullException()
+    public void Constructor_NullSpaceship_ShouldThrowArgumentNullException()
     {
+        var repository = new GameObjectRepository();
         var gameQueue = new Queue<ICommand>();
+        Func<IGameObject, ICommand> dummyFactory = obj => new Mock<ICommand>().Object;
 
         Assert.Throws<ArgumentNullException>(() => 
-            new FirePhotonCommand(null!, gameQueue));
+            new FirePhotonCommand(null!, (1, 0), repository, gameQueue, dummyFactory));
+    }
+
+    [Fact]
+    public void Constructor_NullRepository_ShouldThrowArgumentNullException()
+    {
+        var spaceship = new Spaceship(1, (0, 0));
+        var gameQueue = new Queue<ICommand>();
+        Func<IGameObject, ICommand> dummyFactory = obj => new Mock<ICommand>().Object;
+
+        Assert.Throws<ArgumentNullException>(() => 
+            new FirePhotonCommand(spaceship, (1, 0), null!, gameQueue, dummyFactory));
     }
 
     [Fact]
     public void Constructor_NullQueue_ShouldThrowArgumentNullException()
     {
-        var shooterMock = new Mock<IShootable>();
+        var spaceship = new Spaceship(1, (0, 0));
+        var repository = new GameObjectRepository();
+        Func<IGameObject, ICommand> dummyFactory = obj => new Mock<ICommand>().Object;
 
         Assert.Throws<ArgumentNullException>(() => 
-            new FirePhotonCommand(shooterMock.Object, null!));
+            new FirePhotonCommand(spaceship, (1, 0), repository, null!, dummyFactory));
     }
 
     [Fact]
-    public void Spaceship_ShouldImplementIShootableAndKeepProperties()
+    public void Constructor_NullFactory_ShouldThrowArgumentNullException()
     {
-        var position = (10, 20);
-        var direction = (1, 0);
+        var spaceship = new Spaceship(1, (0, 0));
+        var repository = new GameObjectRepository();
+        var gameQueue = new Queue<ICommand>();
 
-        var spaceship = new Spaceship(1, position, direction);
-
-        Assert.Equal(position, spaceship.Position);
-        Assert.Equal(direction, spaceship.Direction);
-    }
-
-    [Fact]
-    public void Spaceship_Update_ShouldNotThrowException()
-    {
-        var spaceship = new Spaceship(1, (0, 0), (1, 0));
-
-        spaceship.Update();
+        Assert.Throws<ArgumentNullException>(() => 
+            new FirePhotonCommand(spaceship, (1, 0), repository, gameQueue, null!));
     }
 }
