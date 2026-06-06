@@ -8,21 +8,19 @@ namespace SpaceBattle.Tests;
 
 public class GameObjectRepositoryTests
 {
+
     [Fact]
     public void Add_ValidGameObject_ShouldBeAddedToRepository()
     {
         var repository = new GameObjectRepository();
         var gameObjectMock = new Mock<IGameObject>();
         gameObjectMock.SetupGet(g => g.Id).Returns(1);
-        // ← УДАЛИЛИ эту строку: gameObjectMock.SetupProperty(g => g.Position, (10, 20));
-
+        
         repository.Add(gameObjectMock.Object);
+        
         var result = repository.Get(1);
-
-        Assert.NotNull(result);
-        Assert.Equal(1, result.Id);
+        Assert.Equal(gameObjectMock.Object, result);
     }
-
     [Fact]
     public void Add_NullGameObject_ShouldThrowArgumentNullException()
     {
