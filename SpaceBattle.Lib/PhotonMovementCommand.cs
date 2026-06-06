@@ -2,15 +2,15 @@ namespace SpaceBattle.Lib;
 
 public class PhotonMovementCommand : ICommand
 {
-    private readonly Photon _photon;
+    private readonly IMovable _movable;
 
-    public PhotonMovementCommand(Photon photon)
+    public PhotonMovementCommand(IMovable movable)
     {
-        _photon = photon ?? throw new ArgumentNullException(nameof(photon));
+        _movable = movable ?? throw new ArgumentNullException(nameof(movable));
     }
 
     public void Execute()
     {
-        _photon.Update();
+        _movable.Update();
     }
 }
