@@ -1,6 +1,8 @@
 using Moq;
 using SpaceBattle.Lib;
 using Xunit;
+using System;
+using System.Collections.Generic;
 
 namespace SpaceBattle.Tests;
 
@@ -12,22 +14,12 @@ public class RegisterIoCMoveRotateTests
         var moveSubCmdMock = new Mock<ICommand>();
         var rotateSubCmdMock = new Mock<ICommand>();
 
-        var strategyMoveSub = new Mock<IStrategy>();
-        strategyMoveSub.Setup(s => s.Invoke(It.IsAny<object[]>())).Returns(moveSubCmdMock.Object);
+        // Используем Func вместо Mock<IStrategy>
+        IoC.Register("Specs.Move", (args) => new List<string> { "MoveSubCommand" });
+        IoC.Register("Specs.Rotate", (args) => new List<string> { "RotateSubCommand" });
+        IoC.Register("MoveSubCommand", (args) => moveSubCmdMock.Object);
+        IoC.Register("RotateSubCommand", (args) => rotateSubCmdMock.Object);
 
-        var strategyRotateSub = new Mock<IStrategy>();
-        strategyRotateSub.Setup(s => s.Invoke(It.IsAny<object[]>())).Returns(rotateSubCmdMock.Object);
-
-        var strategySpecsMove = new Mock<IStrategy>();
-        strategySpecsMove.Setup(s => s.Invoke(It.IsAny<object[]>())).Returns(new List<string> { "MoveSubCommand" });
-
-        var strategySpecsRotate = new Mock<IStrategy>();
-        strategySpecsRotate.Setup(s => s.Invoke(It.IsAny<object[]>())).Returns(new List<string> { "RotateSubCommand" });
-
-        IoC.Resolve<object>("IoC.Register", "Specs.Move", strategySpecsMove.Object);
-        IoC.Resolve<object>("IoC.Register", "Specs.Rotate", strategySpecsRotate.Object);
-        IoC.Resolve<object>("IoC.Register", "MoveSubCommand", strategyMoveSub.Object);
-        IoC.Resolve<object>("IoC.Register", "RotateSubCommand", strategyRotateSub.Object);
         var registrationCommand = new RegisterIoCDependencyMacroMoveRotate();
         registrationCommand.Execute();
 
