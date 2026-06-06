@@ -20,7 +20,7 @@ namespace SpaceBattle.Lib
             }
             throw new Exception($"Зависимость '{key}' не найдена.");
         }
-        
+
         public static void Reset() => _registry.Clear();
     }
 }
