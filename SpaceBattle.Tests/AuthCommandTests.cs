@@ -45,7 +45,9 @@ public class AuthCommandTests
     {
         var authServiceMock = new Mock<IAuthService>();
 
-        Assert.Throws<ArgumentNullException>(() => new AuthCommand(null!, 1, authServiceMock.Object));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Assert.Throws<ArgumentNullException>(() => new AuthCommand(null, 1, authServiceMock.Object));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
     [Fact]
@@ -54,6 +56,8 @@ public class AuthCommandTests
         var playerMock = new Mock<IPlayer>();
         playerMock.SetupGet(p => p.Id).Returns("player_1");
 
-        Assert.Throws<ArgumentNullException>(() => new AuthCommand(playerMock.Object, 1, null!));
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        Assert.Throws<ArgumentNullException>(() => new AuthCommand(playerMock.Object, 1, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }
