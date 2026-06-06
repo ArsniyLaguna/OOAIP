@@ -7,13 +7,7 @@ public class Photon : IGameObject
     public int Id { get; }
     public (int X, int Y) Position { get; set; }
 
-    /// <summary>
-    /// Создать фотонную торпеду
-    /// </summary>
-    /// <param name="id">Идентификатор торпеды</param>
-    /// <param name="position">Начальная позиция</param>
-    /// <param name="direction">Направление движения</param>
-    /// <param name="speed">Скорость движения</param>
+
     public Photon(int id, (int X, int Y) position, (int X, int Y) direction, int speed = 1)
     {
         if (speed <= 0)
