@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SpaceBattle.Lib;
 
 public class Game
