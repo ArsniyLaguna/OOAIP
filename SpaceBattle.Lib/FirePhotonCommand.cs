@@ -6,7 +6,6 @@ public class FirePhotonCommand : ICommand
     private readonly (int X, int Y) _direction;
     private readonly IGameObjectRepository _repository;
 
-
     public FirePhotonCommand(Spaceship spaceship, (int X, int Y) direction, IGameObjectRepository repository)
     {
         _spaceship = spaceship ?? throw new ArgumentNullException(nameof(spaceship));
