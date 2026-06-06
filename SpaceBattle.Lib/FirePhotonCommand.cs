@@ -1,22 +1,33 @@
+using System;
+using System.Collections.Generic;
+
 namespace SpaceBattle.Lib;
+
 
 public class FirePhotonCommand : ICommand
 {
-    private readonly Spaceship _spaceship;
+    private readonly IGameObject _spaceship;
     private readonly (int X, int Y) _direction;
     private readonly IGameObjectRepository _repository;
+    private readonly Queue<ICommand> _gameQueue;
 
-    public FirePhotonCommand(Spaceship spaceship, (int X, int Y) direction, IGameObjectRepository repository)
+    public FirePhotonCommand(IGameObject spaceship, (int X, int Y) direction, IGameObjectRepository repository, Queue<ICommand> gameQueue)
     {
         _spaceship = spaceship ?? throw new ArgumentNullException(nameof(spaceship));
         _direction = direction;
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _gameQueue = gameQueue ?? throw new ArgumentNullException(nameof(gameQueue));
     }
 
     public void Execute()
     {
-        var photon = _spaceship.FirePhoton(_direction);
+        int nextId = _repository.GetAll().Count() + 1;
+        var photon = new Photon(nextId, _spaceship.Position, _direction);
 
         _repository.Add(photon);
+
+        var moveCommand = new GameObjectMovementCommand(photon);
+
+        _gameQueue.Enqueue(moveCommand);
     }
 }
