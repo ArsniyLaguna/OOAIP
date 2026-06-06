@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Moq;
 using SpaceBattle.Lib;
 using Xunit;
@@ -26,7 +28,7 @@ public class GameObjectRepositoryTests
     {
         var repository = new GameObjectRepository();
 
-        Assert.Throws<ArgumentNullException>(() => repository.Add(null));
+        Assert.Throws<ArgumentNullException>(() => repository.Add(null!));
     }
 
     [Fact]
@@ -56,7 +58,6 @@ public class GameObjectRepositoryTests
     [Fact]
     public void Remove_ExistingId_ShouldRemoveObject()
     {
-
         var repository = new GameObjectRepository();
         var gameObjectMock = new Mock<IGameObject>();
         gameObjectMock.SetupGet(g => g.Id).Returns(5);
@@ -107,8 +108,8 @@ public class GameObjectRepositoryTests
         obj2Mock.SetupGet(g => g.Id).Returns(1);
         
         repository.Add(obj1Mock.Object);
-
         repository.Add(obj2Mock.Object);
+        
         var result = repository.Get(1);
 
         Assert.Equal(obj2Mock.Object, result);
