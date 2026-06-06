@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace SpaceBattle.Lib;
@@ -29,9 +28,10 @@ public class Game
             {
                 command.Execute();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                // Intentionally swallow command execution exceptions to allow game loop to continue
+                System.Diagnostics.Debug.WriteLine($"Command execution failed: {ex.Message}");
             }
         }
 
