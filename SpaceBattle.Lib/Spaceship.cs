@@ -1,31 +1,32 @@
 namespace SpaceBattle.Lib;
 
-public class Spaceship : IGameObject
+public class Spaceship : IMovable
 {
     private int _nextPhotonId = 1;
-    private (int X, int Y) _velocity;
+    private Vector _velocity;
 
     public int Id { get; }
-    public (int X, int Y) Position { get; set; }
+    public Vector Position { get; set; }
+    public Vector Velocity => _velocity;
 
-    public Spaceship(int id, (int X, int Y) position)
+    public Spaceship(int id, Vector position)
     {
         Id = id;
         Position = position;
-        _velocity = (0, 0);
+        _velocity = new Vector(0, 0);
     }
 
-    public void SetVelocity((int X, int Y) velocity)
+    public void SetVelocity(Vector velocity)
     {
         _velocity = velocity;
     }
 
     public void Update()
     {
-        Position = (Position.X + _velocity.X, Position.Y + _velocity.Y);
+        Position = new Vector(Position.X + _velocity.X, Position.Y + _velocity.Y);
     }
 
-    public Photon FirePhoton((int X, int Y) direction)
+    public Photon FirePhoton(Vector direction)
     {
         return new Photon(_nextPhotonId++, Position, direction);
     }
