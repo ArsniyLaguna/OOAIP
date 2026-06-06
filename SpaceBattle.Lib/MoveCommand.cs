@@ -1,16 +1,17 @@
-namespace SpaceBattle.Lib;
-
-public class MoveCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    private readonly IMovable _obj;
-
-    public MoveCommand(IMovable obj)
+    public class MoveCommand : ICommand
     {
-        _obj = obj;
-    }
+        private readonly IMovingObject _obj;
 
-    public void Execute()
-    {
-        _obj.Position += _obj.Velocity;
+        public MoveCommand(IMovingObject obj)
+        {
+            _obj = obj;
+        }
+
+        public void Execute()
+        {
+            _obj.Position = _obj.Position + _obj.Velocity;
+        }
     }
 }
