@@ -19,7 +19,6 @@ public class Game
 
     public void Tick()
     {
-        // Выполняем все команды из очереди (стрельба, движение по приказу, и т.д.)
         while (_commandQueue.Count > 0)
         {
             var command = _commandQueue.Dequeue();
@@ -29,11 +28,9 @@ public class Game
             }
             catch (Exception)
             {
-                // Игнорируем ошибки в командах
             }
         }
 
-        // Автоматически двигаем все объекты
         var moveCommands = _movementFactory.CreateMovementCommandsForAll();
         foreach (var moveCmd in moveCommands)
         {
