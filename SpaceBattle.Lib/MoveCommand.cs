@@ -11,6 +11,6 @@ public class MoveCommand : ICommand
 
     public void Execute()
     {
-
+        // Логика перемещения объекта
     }
 }
