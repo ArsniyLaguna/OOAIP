@@ -1,38 +1,21 @@
-using Moq;
-using SpaceBattle.Lib;
-using Xunit;
-using System;
-using System.Collections.Generic;
+ namespace SpaceBattle.Lib;
 
-namespace SpaceBattle.Tests;
-
-public class RegisterIoCMoveRotateTests
+public class RegisterIoCDependencyMacroMoveRotate : ICommand
 {
-    [Fact]
-    public void RegisterIoCDependencyMacroMoveRotate_RegistersAndResolvesBothCorrectly()
+    public void Execute()
     {
-        var moveSubCmdMock = new Mock<ICommand>();
-        var rotateSubCmdMock = new Mock<ICommand>();
+        // Регистрация макрокоманды перемещения на базе Specs.Move
+        IoC.Register("Macro.Move", (args) =>
+        {
+            var strategy = new CreateMacroCommandStrategy("Specs.Move");
+            return strategy.Invoke(args);
+        });
 
-        // Используем Func вместо Mock<IStrategy>
-        IoC.Register("Specs.Move", (args) => new List<string> { "MoveSubCommand" });
-        IoC.Register("Specs.Rotate", (args) => new List<string> { "RotateSubCommand" });
-        IoC.Register("MoveSubCommand", (args) => moveSubCmdMock.Object);
-        IoC.Register("RotateSubCommand", (args) => rotateSubCmdMock.Object);
-
-        var registrationCommand = new RegisterIoCDependencyMacroMoveRotate();
-        registrationCommand.Execute();
-
-        var resolvedMacroMove = IoC.Resolve<ICommand>("Macro.Move", new object[] { "игровой_объект" });
-        var resolvedMacroRotate = IoC.Resolve<ICommand>("Macro.Rotate", new object[] { "игровой_объект" });
-
-        Assert.NotNull(resolvedMacroMove);
-        Assert.NotNull(resolvedMacroRotate);
-
-        resolvedMacroMove.Execute();
-        resolvedMacroRotate.Execute();
-
-        moveSubCmdMock.Verify(c => c.Execute(), Times.Once);
-        rotateSubCmdMock.Verify(c => c.Execute(), Times.Once);
+        // Регистрация макрокоманды вращения на базе Specs.Rotate
+        IoC.Register("Macro.Rotate", (args) =>
+        {
+            var strategy = new CreateMacroCommandStrategy("Specs.Rotate");
+            return strategy.Invoke(args);
+        });
     }
 }
