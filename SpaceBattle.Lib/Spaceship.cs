@@ -15,7 +15,6 @@ public class Spaceship : IGameObject
 
     public void Update()
     {
-
     }
 
     public Photon FirePhoton((int X, int Y) direction)
