@@ -16,4 +16,9 @@ public class RotateCommand : ICommand
 
         _rotatable.Angle = currentAngle + velocity;
     }
+public class RotateCommand : ICommand
+{
+    private readonly IRotatable _rotatable;
+    public RotateCommand(IRotatable rotatable) => _rotatable = rotatable;
+    public void Execute() { }
 }
