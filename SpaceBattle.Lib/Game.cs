@@ -31,7 +31,7 @@ public class Game
             }
             catch (Exception)
             {
-                // Будет обработано позже
+
             }
         }
 
