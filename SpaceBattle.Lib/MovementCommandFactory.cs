@@ -13,10 +13,13 @@ public class MovementCommandFactory
     {
         var commands = new List<ICommand>();
         
-        foreach (var gameObject in _repository.GetAll())
-        {
-            commands.Add(new GameObjectMovementCommand(gameObject));
-        }
+    foreach (var gameObject in _repository.GetAll())
+    {
+    if (gameObject is IMovable movable)
+    {
+        commands.Add(new GameObjectMovementCommand(movable));
+    }
+    }
 
         return commands;
     }
