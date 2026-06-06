@@ -1,8 +1,8 @@
-namespace SpaceBattle.Lib;
-
-public interface IRotatable
+namespace SpaceBattle.Lib
 {
-    Angle Angle { get; set; }
-    Angle AngularVelocity { get; }
+    public interface IRotatable
+    {
+        Angle Angle { get; set; }
+        Angle AngularVelocity { get; }
+    }
 }
-public interface IRotatable { Angle Angle { get; set; } Angle AngularVelocity { get; } }
