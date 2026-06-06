@@ -29,9 +29,9 @@ public class Game
             {
                 command.Execute();
             }
-            catch (Exception)
+            catch (Exception _)
             {
-                // Будет обработано позже
+                
             }
         }
 
