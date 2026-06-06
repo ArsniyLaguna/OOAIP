@@ -11,13 +11,13 @@ public class CreateMacroCommandStrategy : IStrategy
 
     public object Invoke(params object[] args)
     {
-        // 1. Получаем список имен команд
+        // Получаем список имен команд и передаем args, если спецификации нужно знать контекст
         var commandNames = IoC.Resolve<IEnumerable<string>>(_commandSpec, args);
         
-        // 2. Создаем команды
+        // Создаем экземпляры команд
         var commands = commandNames.Select(name => IoC.Resolve<ICommand>(name, args));
         
-        // 3. Возвращаем макрос
+        // Возвращаем готовую макро-команду
         return new MacroCommand(commands);
     }
 }
