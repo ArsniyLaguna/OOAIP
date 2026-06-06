@@ -1,17 +1,16 @@
-namespace SpaceBattle.Lib
+namespace SpaceBattle.Lib;
+
+public class MoveCommand : ICommand
 {
-    public class MoveCommand : ICommand
+    private readonly IMovingObject _obj;
+
+    public MoveCommand(IMovingObject obj)
     {
-        private readonly IMovingObject _obj;
+        _obj = obj;
+    }
 
-        public MoveCommand(IMovingObject obj)
-        {
-            _obj = obj;
-        }
+    public void Execute()
+    {
 
-        public void Execute()
-        {
-            // Здесь будет логика выполнения
-        }
     }
 }
