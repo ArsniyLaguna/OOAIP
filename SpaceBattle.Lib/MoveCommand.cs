@@ -2,9 +2,9 @@ namespace SpaceBattle.Lib;
 
 public class MoveCommand : ICommand
 {
-    private readonly IMovingObject _obj;
+    private readonly IMovable _obj;
 
-    public MoveCommand(IMovingObject obj)
+    public MoveCommand(IMovable obj)
     {
         _obj = obj;
     }
