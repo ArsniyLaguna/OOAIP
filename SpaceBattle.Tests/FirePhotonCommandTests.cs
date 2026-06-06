@@ -76,15 +76,18 @@ public class FirePhotonCommandTests
         Assert.Equal((20, 30), spaceship.Position);
     }
 
-    [Fact]
+[Fact]
     public void Photon_Properties_And_Update_ShouldBeCovered()
     {
-        // Arrange & Act
-        var photon = new Photon(100, (1, 2), (0, 1));
-        photon.Update(); // Покрываем метод Update у фотона
+        // Arrange
+        var initialPos = (1, 2);
+        var velocity = (0, 1);
+        var photon = new Photon(100, initialPos, velocity);
+
+        photon.Update();
 
         // Assert
         Assert.Equal(100, photon.Id);
-        Assert.Equal((1, 2), photon.Position);
+        Assert.Equal((1, 3), photon.Position);
     }
 }
