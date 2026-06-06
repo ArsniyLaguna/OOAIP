@@ -68,4 +68,32 @@ public class InjectableCommandTests
 
         Assert.Single(commandQueue);
     }
+
+    [Fact]
+    public void RegisterActionsStop_ResolvesCorrectlyWithOrder_AndRunsInConstantTime()
+    {
+        ICommand registerStop = new RegisterIoCDependencyActionsStop();
+        registerStop.Execute();
+
+        var injectable = new CommandInjectableCommand();
+        var movingMock = new Mock<ICommand>();
+        injectable.Inject(movingMock.Object);
+
+        injectable.Execute();
+        movingMock.Verify(m => m.Execute(), Times.Once);
+
+        IDictionary<string, object> order = new Dictionary<string, object>
+        {
+            { "TargetCommand", injectable }
+        };
+
+        var stopCommand = IoC.Resolve<ICommand>("Actions.Stop", order);
+        Assert.NotNull(stopCommand);
+
+        stopCommand.Execute();
+
+        injectable.Execute();
+        movingMock.Verify(m => m.Execute(), Times.Once);
+        
+    }
 }

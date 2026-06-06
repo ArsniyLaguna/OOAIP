@@ -1,6 +1,7 @@
-namespace SpaceBattle.Lib;
+using System;
+using System.Collections.Generic;
 
-public static class IoC
+namespace SpaceBattle.Lib
 {
     private readonly static Dictionary<string, Func<object[], object>> _strategies = new();
 
@@ -18,13 +19,25 @@ public static class IoC
         _strategies[key] = strategy;
     private static readonly Dictionary<string, IStrategy> _strategies = new();
     public static T Resolve<T>(string key, params object[] args)
+    public static class IoC
     {
-        if (key == "IoC.Register")
+        // Используем один общий словарь для всех стратегий
+        private static readonly Dictionary<string, Func<object[], object>> _strategies = new();
+
+        public static T Resolve<T>(string key, params object[] args)
         {
-            _strategies[(string)args[0]] = (IStrategy)args[1];
-            return default!;
+            if (_strategies.TryGetValue(key, out var strategy))
+            {
+                return (T)strategy(args);
+            }
+            throw new Exception($"Зависимость '{key}' не зарегистрирована.");
         }
-        if (_strategies.TryGetValue(key, out var strategy)) return (T)strategy.Invoke(args);
-        throw new Exception($"Зависимость {key} не найдена.");
+
+        public static void Register(string key, Func<object[], object> strategy)
+        {
+            _strategies[key] = strategy;
+        }
+
+        public static void Reset() => _strategies.Clear();
     }
 }
