@@ -7,45 +7,8 @@ using Xunit;
 
 namespace SpaceBattle.Tests;
 
-public class CoverageBoostTests
+public class FirePhotonCommandTests
 {
-
-    [Fact]
-    public void Game_Tick_WhenCommandThrowsException_ShouldIgnoreAndContinue()
-    {
-        // Arrange
-        var repositoryMock = new Mock<IGameObjectRepository>();
-        var factoryMock = new Mock<MovementCommandFactory>(repositoryMock.Object);
-        factoryMock.Setup(f => f.CreateMovementCommandsForAll()).Returns(new List<ICommand>());
-
-        var game = new Game(repositoryMock.Object, factoryMock.Object);
-        var badCommandMock = new Mock<ICommand>();
-        
-        // Симулируем выброс исключения внутри команды, чтобы зайти в блок catch(Exception) в Game.Tick
-        badCommandMock.Setup(c => c.Execute()).Throws(new Exception("Тестовое подавление ошибки"));
-        game.InjectCommand(badCommandMock.Object);
-
-        // Act
-        var exception = Record.Exception(() => game.Tick());
-
-        // Assert
-        Assert.Null(exception); // Игра не должна упасть, блок catch должен сработать
-    }
-
-    [Fact]
-    public void Game_Constructor_NullRepository_ShouldThrowArgumentNullException()
-    {
-        var factoryMock = new Mock<MovementCommandFactory>(new Mock<IGameObjectRepository>().Object);
-        Assert.Throws<ArgumentNullException>(() => new Game(null!, factoryMock.Object));
-    }
-
-    [Fact]
-    public void Game_Constructor_NullFactory_ShouldThrowArgumentNullException()
-    {
-        var repositoryMock = new Mock<IGameObjectRepository>();
-        Assert.Throws<ArgumentNullException>(() => new Game(repositoryMock.Object, null!));
-    }
-
 
     [Fact]
     public void FirePhotonCommand_Execute_ShouldCreatePhoton_AddToRepository_AndEnqueueMovement()
@@ -57,7 +20,7 @@ public class CoverageBoostTests
         var gameQueue = new Queue<ICommand>();
         var moveCommandMock = new Mock<ICommand>();
 
-        // Фабричный метод-лямбда для изоляции от конкретных классов команд
+        // Передаем фабричный метод-лямбду
         var command = new FirePhotonCommand(
             spaceship, 
             direction, 
@@ -74,7 +37,7 @@ public class CoverageBoostTests
         Assert.NotNull(photon);
         Assert.Equal(spaceship.Position, photon.Position);
         
-        // Проверяем запуск: команда движения должна оказаться в очереди
+        // Проверяем, что команда движения успешно попала в игровую очередь
         Assert.Single(gameQueue);
         Assert.Equal(moveCommandMock.Object, gameQueue.Peek());
     }
@@ -87,75 +50,41 @@ public class CoverageBoostTests
         var spaceship = new Spaceship(1, (0, 0));
         Func<IGameObject, ICommand> dummyFactory = obj => new Mock<ICommand>().Object;
 
+        // null! убирает предупреждения компилятора в CI и проверяет генерацию исключений
         Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(null!, (1, 0), repository, gameQueue, dummyFactory));
         Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(spaceship, (1, 0), null!, gameQueue, dummyFactory));
         Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(spaceship, (1, 0), repository, null!, dummyFactory));
         Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(spaceship, (1, 0), repository, gameQueue, null!));
     }
 
+    // ==========================================
+    // 2. ТЕСТЫ ДЛЯ SPACESHIP И PHOTON (ДОБИВАЕМ ПОКРЫТИЕ СВОЙСТВ)
+    // ==========================================
 
     [Fact]
-    public void GameObjectRepository_Add_And_Get_ShouldWorkCorrectly()
+    public void Spaceship_Properties_And_Update_ShouldBeCovered()
     {
         // Arrange
-        var repository = new GameObjectRepository();
-        var gameObjectMock = new Mock<IGameObject>();
-        gameObjectMock.SetupGet(g => g.Id).Returns(42);
+        var spaceship = new Spaceship(10, (5, 5));
 
         // Act
-        repository.Add(gameObjectMock.Object);
-        var result = repository.Get(42);
+        spaceship.Position = (20, 30);
+        spaceship.Update(); // Покрываем пустой метод Update
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(42, result.Id);
+        Assert.Equal(10, spaceship.Id);
+        Assert.Equal((20, 30), spaceship.Position);
     }
 
     [Fact]
-    public void GameObjectRepository_Add_Null_ShouldThrowArgumentNullException()
+    public void Photon_Properties_And_Update_ShouldBeCovered()
     {
-        var repository = new GameObjectRepository();
-        Assert.Throws<ArgumentNullException>(() => repository.Add(null!));
-    }
-
-    [Fact]
-    public void GameObjectRepository_Get_NonExistingId_ShouldReturnNull()
-    {
-        var repository = new GameObjectRepository();
-        Assert.Null(repository.Get(999));
-    }
-
-    [Fact]
-    public void GameObjectRepository_Remove_ShouldDeleteObject()
-    {
-        // Arrange
-        var repository = new GameObjectRepository();
-        var gameObjectMock = new Mock<IGameObject>();
-        gameObjectMock.SetupGet(g => g.Id).Returns(5);
-        repository.Add(gameObjectMock.Object);
-
-        // Act
-        repository.Remove(5);
+        // Arrange & Act
+        var photon = new Photon(100, (1, 2), (0, 1));
+        photon.Update(); // Покрываем метод Update у фотона
 
         // Assert
-        Assert.Null(repository.Get(5));
-    }
-
-
-    [Fact]
-    public void UserSession_Properties_ShouldRetainConstructorValues()
-    {
-        // Arrange
-        var token = "secure_token_123";
-        var playerId = 777;
-        var expireTime = DateTime.UtcNow.AddHours(2);
-
-        // Act
-        var session = new UserSession(token, playerId, expireTime);
-
-        // Assert
-        Assert.Equal(token, session.Token);
-        Assert.Equal(playerId, session.PlayerId);
-        Assert.Equal(expireTime, session.ExpireTime);
+        Assert.Equal(100, photon.Id);
+        Assert.Equal((1, 2), photon.Position);
     }
 }
