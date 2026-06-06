@@ -29,17 +29,13 @@ public class FirePhotonCommand : ICommand
 
     public void Execute()
     {
-        // 1. Создаем торпеду (ID генерируем динамически на основе размера репозитория)
         int nextId = _repository.GetAll().Count() + 1;
         var photon = new Photon(nextId, _spaceship.Position, _direction);
 
-        // 2. Связываем выстрел с репозиторием (добавляем торпеду в систему)
         _repository.Add(photon);
 
-        // 3. Создаем команду движения через абстрактный делегат (чистый DIP)
         var moveCommand = _moveCommandFactory(photon);
 
-        // 4. Запускаем торпеду: отправляем команду движения в общую очередь игры
         _gameQueue.Enqueue(moveCommand);
     }
 }
