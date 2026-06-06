@@ -4,6 +4,7 @@ public class GameObjectMovementCommand : ICommand
 {
     private readonly IGameObject _gameObject;
 
+    public GameObjectMovementCommand(IGameObject gameObject)
     {
         _gameObject = gameObject ?? throw new ArgumentNullException(nameof(gameObject));
     }
