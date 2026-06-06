@@ -14,6 +14,7 @@ namespace SpaceBattle.Lib
         {
             if (_strategies.TryGetValue(key, out var strategy)) 
                 return (T)strategy(args);
+            
             throw new Exception($"Зависимость '{key}' не найдена.");
         }
 
