@@ -30,7 +30,6 @@ public class Game
             }
             catch (Exception ex)
             {
-                // Intentionally swallow command execution exceptions to allow game loop to continue
                 System.Diagnostics.Debug.WriteLine($"Command execution failed: {ex.Message}");
             }
         }
