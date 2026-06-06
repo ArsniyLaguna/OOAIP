@@ -13,16 +13,6 @@ namespace SpaceBattle.Lib
         {
             if (_registry.TryGetValue(key, out var strategy)) return (T)strategy(args);
             throw new Exception($"Зависимость '{key}' не найдена.");
-        // Используем один общий словарь для всех стратегий
-        private static readonly Dictionary<string, Func<object[], object>> _strategies = new();
-
-        public static T Resolve<T>(string key, params object[] args)
-        {
-            if (_strategies.TryGetValue(key, out var strategy))
-            {
-                return (T)strategy(args);
-            }
-            throw new Exception($"Зависимость '{key}' не зарегистрирована.");
         }
 
         public static void Reset() => _registry.Clear();
