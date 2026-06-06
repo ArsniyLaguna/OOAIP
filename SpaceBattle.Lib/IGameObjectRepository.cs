@@ -1,30 +1,12 @@
 namespace SpaceBattle.Lib;
 
-public class GameObjectRepository : IGameObjectRepository
+public interface IGameObjectRepository
 {
-    private readonly Dictionary<int, IGameObject> _objects = new();
+    void Add(IGameObject gameObject);
 
-    public void Add(IGameObject gameObject)
-    {
-        if (gameObject == null)
-            throw new ArgumentNullException(nameof(gameObject));
+    IGameObject? Get(int id);
 
-        _objects[gameObject.Id] = gameObject;
-    }
+    void Remove(int id);
 
-    public IGameObject? Get(int id)
-    {
-        _objects.TryGetValue(id, out var obj);
-        return obj;
-    }
-
-    public void Remove(int id)
-    {
-        _objects.Remove(id);
-    }
-
-    public IEnumerable<IGameObject> GetAll()
-    {
-        return _objects.Values.ToList();
-    }
+    IEnumerable<IGameObject> GetAll();
 }
