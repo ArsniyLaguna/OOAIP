@@ -15,7 +15,8 @@ public class FirePhotonCommand : ICommand
 
     public void Execute()
     {
-        var photon = _spaceship.FirePhoton(_direction);
+        var direction = new Vector(_direction.X, _direction.Y);
+        var photon = _spaceship.FirePhoton(direction);
         _repository.Add(photon);
     }
 }
