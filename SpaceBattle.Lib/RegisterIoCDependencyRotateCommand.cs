@@ -1,18 +1,15 @@
-namespace SpaceBattle.Lib;
-
-public class RegisterIoCDependencyRotateCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    public void Execute()
+    public class RegisterIoCDependencyRotateCommand : ICommand
     {
-        IoC.Resolve<object>(
-            "IoC.Register",
-            "Commands.Rotate",
-            new Func<object[], object>(args =>
+        public void Execute()
+        {
+            IoC.Register("Commands.Rotate", (args) =>
             {
                 var uObject = args[0];
                 var rotatableAdapter = IoC.Resolve<IRotatable>("Adapters.IRotatable", uObject);
                 return new RotateCommand(rotatableAdapter);
-            })
-        );
+            });
+        }
     }
 }
