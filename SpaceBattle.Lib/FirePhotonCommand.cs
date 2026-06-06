@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpaceBattle.Lib;
 
@@ -26,7 +27,8 @@ public class FirePhotonCommand : ICommand
 
         _repository.Add(photon);
 
-        var moveCommand = new GameObjectMovementCommand(photon);
+        var movementFactory = new MovementCommandFactory(_repository);
+        var moveCommand = movementFactory.CreateMovementCommand(photon);
 
         _gameQueue.Enqueue(moveCommand);
     }
