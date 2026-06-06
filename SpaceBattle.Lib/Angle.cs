@@ -1,18 +1,15 @@
+using System;
+
 namespace SpaceBattle.Lib;
 
 public class Angle
 {
     public static int Denominator { get; set; } = 8;
-
     public int Numerator { get; }
 
     public Angle(int numerator)
     {
-        int resolved = numerator % Denominator;
-        
-        if (resolved < 0) resolved += Denominator;
-        
-        Numerator = resolved;
+        Numerator = ((numerator % Denominator) + Denominator) % Denominator;
     }
 
     public static Angle operator +(Angle a, Angle b)
@@ -27,11 +24,9 @@ public class Angle
 
     public override bool Equals(object? obj)
     {
-        if (obj is Angle other)
-        {
-            return this.Numerator == other.Numerator;
-        }
-        return false;
+        var objectAngle = obj as Angle;
+
+        return objectAngle is not null && Numerator == objectAngle.Numerator;
     }
 
     public override int GetHashCode()
@@ -41,9 +36,7 @@ public class Angle
 
     public static bool operator ==(Angle? a, Angle? b)
     {
-        if (ReferenceEquals(a, b)) return true;
-        if (a is null || b is null) return false;
-        return a.Equals(b);
+        return ReferenceEquals(a, b) || (a is not null && a.Equals(b));
     }
 
     public static bool operator !=(Angle? a, Angle? b)
