@@ -16,6 +16,7 @@ public static class IoC
     public static void Register(string key, Func<object[], object> strategy)
     {
         _strategies[key] = strategy;
+    }
     private static readonly Dictionary<string, IStrategy> _strategies = new();
     public static T Resolve<T>(string key, params object[] args)
     {
