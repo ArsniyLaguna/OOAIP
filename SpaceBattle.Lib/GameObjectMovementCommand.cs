@@ -11,6 +11,5 @@ public class GameObjectMovementCommand : ICommand
 
     public void Execute()
     {
-        _gameObject.Update();
     }
 }
