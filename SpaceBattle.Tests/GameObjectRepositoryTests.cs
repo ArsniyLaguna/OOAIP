@@ -31,6 +31,20 @@ namespace SpaceBattle.Tests
         }
 
         [Fact]
+        public void Get_ExistingId_ShouldReturnObject()
+        {
+            var repository = new GameObjectRepository();
+            var gameObjectMock = new Mock<IGameObject>();
+            gameObjectMock.SetupGet(g => g.Id).Returns(42);
+            
+            repository.Add(gameObjectMock.Object);
+            
+            var result = repository.Get(42);
+            Assert.NotNull(result);
+            Assert.Equal(42, result.Id);
+        }
+
+        [Fact]
         public void Get_NonExistingId_ShouldReturnNull()
         {
             var repository = new GameObjectRepository();
@@ -53,6 +67,22 @@ namespace SpaceBattle.Tests
         }
 
         [Fact]
+        public void GetAll_MultipleObjects_ShouldReturnAllObjects()
+        {
+            var repository = new GameObjectRepository();
+            var obj1Mock = new Mock<IGameObject>();
+            var obj2Mock = new Mock<IGameObject>();
+            obj1Mock.SetupGet(g => g.Id).Returns(1);
+            obj2Mock.SetupGet(g => g.Id).Returns(2);
+            
+            repository.Add(obj1Mock.Object);
+            repository.Add(obj2Mock.Object);
+            
+            var result = repository.GetAll().ToList();
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
         public void GetAll_EmptyRepository_ShouldReturnEmptyList()
         {
             var repository = new GameObjectRepository();
@@ -66,7 +96,6 @@ namespace SpaceBattle.Tests
             var repository = new GameObjectRepository();
             var obj1Mock = new Mock<IGameObject>();
             var obj2Mock = new Mock<IGameObject>();
-            
             obj1Mock.SetupGet(g => g.Id).Returns(1);
             obj2Mock.SetupGet(g => g.Id).Returns(1);
             
