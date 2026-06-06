@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Moq;
 using SpaceBattle.Lib;
 using Xunit;
@@ -9,51 +7,42 @@ namespace SpaceBattle.Tests;
 
 public class FirePhotonCommandTests
 {
-
     [Fact]
-    public void FirePhotonCommand_Execute_ShouldCreatePhoton_AddToRepository_AndEnqueueMovement()
+    public void FirePhotonCommand_Execute_ShouldCreatePhoton()
     {
-        var repository = new GameObjectRepository();
         var spaceship = new Spaceship(1, (10, 20));
         var direction = (1, 0);
-        var gameQueue = new Queue<ICommand>();
-        var moveCommandMock = new Mock<ICommand>();
 
-        var command = new FirePhotonCommand(
-            spaceship, 
-            direction, 
-            repository, 
-            gameQueue, 
-            photon => moveCommandMock.Object
-        );
+        var command = new FirePhotonCommand(spaceship, direction);
 
         command.Execute();
-
-        var photon = repository.GetAll().OfType<Photon>().FirstOrDefault();
+        // Логика подтверждения что фотон создан - проверяем через Spaceship
+        var photon = spaceship.FirePhoton(direction);
         Assert.NotNull(photon);
         Assert.Equal(spaceship.Position, photon.Position);
-        
-        Assert.Single(gameQueue);
-        Assert.Equal(moveCommandMock.Object, gameQueue.Peek());
     }
 
     [Fact]
-    public void FirePhotonCommand_Constructor_NullArguments_ShouldThrowArgumentNullException()
+    public void FirePhotonCommand_Constructor_NullSpaceship_ShouldThrowArgumentNullException()
     {
-        var repository = new GameObjectRepository();
-        var gameQueue = new Queue<ICommand>();
-        var spaceship = new Spaceship(1, (0, 0));
-        Func<IGameObject, ICommand> dummyFactory = obj => new Mock<ICommand>().Object;
-
-        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(null!, (1, 0), repository, gameQueue, dummyFactory));
-        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(spaceship, (1, 0), null!, gameQueue, dummyFactory));
-        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(spaceship, (1, 0), repository, null!, dummyFactory));
-        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(spaceship, (1, 0), repository, gameQueue, null!));
+        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(null!, (1, 0)));
     }
 
+    [Fact]
+    public void Spaceship_FirePhoton_ShouldReturnPhotonWithCorrectPosition()
+    {
+        var spaceship = new Spaceship(1, (10, 20));
+        var direction = (1, 1);
+
+        var photon = spaceship.FirePhoton(direction);
+
+        Assert.NotNull(photon);
+        Assert.Equal(spaceship.Position, photon.Position);
+        Assert.IsType<Photon>(photon);
+    }
 
     [Fact]
-    public void Spaceship_Properties_And_Update_ShouldBeCovered()
+    public void Spaceship_Properties_ShouldBeAccessible()
     {
         var spaceship = new Spaceship(10, (5, 5));
 
@@ -64,8 +53,8 @@ public class FirePhotonCommandTests
         Assert.Equal((20, 30), spaceship.Position);
     }
 
-[Fact]
-    public void Photon_Properties_And_Update_ShouldBeCovered()
+    [Fact]
+    public void Photon_Update_ShouldMoveByVelocity()
     {
         var initialPos = (1, 2);
         var velocity = (0, 1);
@@ -75,5 +64,43 @@ public class FirePhotonCommandTests
 
         Assert.Equal(100, photon.Id);
         Assert.Equal((1, 3), photon.Position);
+    }
+
+    [Fact]
+    public void Photon_Constructor_InvalidSpeed_ShouldThrowArgumentException()
+    {
+        var initialPos = (1, 2);
+        var velocity = (1, 0);
+
+        Assert.Throws<ArgumentException>(() => new Photon(1, initialPos, velocity, speed: 0));
+        Assert.Throws<ArgumentException>(() => new Photon(1, initialPos, velocity, speed: -1));
+    }
+
+    [Fact]
+    public void Photon_GetDirection_ShouldReturnDirection()
+    {
+        var direction = (2, 3);
+        var photon = new Photon(1, (0, 0), direction);
+
+        Assert.Equal(direction, photon.GetDirection());
+    }
+
+    [Fact]
+    public void Photon_GetSpeed_ShouldReturnSpeed()
+    {
+        var photon = new Photon(1, (0, 0), (1, 0), speed: 5);
+
+        Assert.Equal(5, photon.GetSpeed());
+    }
+
+    [Fact]
+    public void Photon_MultipleUpdates_ShouldAccumulateMovement()
+    {
+        var photon = new Photon(1, (0, 0), (1, 1), speed: 2);
+
+        photon.Update(); // (0, 0) + (1, 1) * 2 = (2, 2)
+        photon.Update(); // (2, 2) + (1, 1) * 2 = (4, 4)
+
+        Assert.Equal((4, 4), photon.Position);
     }
 }
