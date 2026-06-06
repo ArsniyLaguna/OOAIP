@@ -8,10 +8,9 @@ public class Angle
 
     public Angle(int numerator)
     {
-        int maxUnits = Denominator; 
-        int resolved = numerator % maxUnits;
+        int resolved = numerator % Denominator;
         
-        if (resolved < 0) resolved += maxUnits;
+        if (resolved < 0) resolved += Denominator;
         
         Numerator = resolved;
     }
