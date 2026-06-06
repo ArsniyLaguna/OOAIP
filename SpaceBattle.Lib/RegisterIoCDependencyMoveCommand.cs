@@ -7,8 +7,8 @@ namespace SpaceBattle.Lib
             IoC.Register("Commands.Move", (args) =>
             {
                 var obj = args[0];
-                var movingObject = IoC.Resolve<IMovingObject>("Adapters.IMovingObject", obj);
-                return new MoveCommand(movingObject);
+                var movable = IoC.Resolve<IMovable>("Adapters.IMovable", obj);
+                return new MoveCommand(movable);
             });
         }
     }
