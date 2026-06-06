@@ -42,7 +42,8 @@ public class GameObjectMovementCommandTests
     public void Constructor_NullGameObject_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new GameObjectMovementCommand(null));
+        // Добавлен оператор ! для подавления предупреждения Nullability
+        Assert.Throws<ArgumentNullException>(() => new GameObjectMovementCommand(null!));
     }
 
     [Fact]
