@@ -8,6 +8,17 @@ namespace SpaceBattle.Tests;
 
 public class InjectableCommandTests
 {
+    public InjectableCommandTests()
+    {
+        // 1. Очищаем состояние IoC перед каждым тестом для полной изоляции
+        IoC.Reset();
+        
+        // 2. Глобальная регистрация зависимостей
+        new RegisterDependencyCommandInjectableCommand().Execute();
+        new RegisterIoCDependencyActionsStart().Execute();
+        new RegisterIoCDependencyActionsStop().Execute(); 
+    }
+    
     [Fact]
     public void InjectableCommand_WithInjectedCommand_ExecutesCorrectly()
     {
@@ -31,9 +42,6 @@ public class InjectableCommandTests
     [Fact]
     public void RegisterCommandInjectable_ResolvesToAllRequiredTypes()
     {
-        ICommand registerCmd = new RegisterDependencyCommandInjectableCommand();
-        registerCmd.Execute();
-
         var resolveAsICommand = IoC.Resolve<ICommand>("Commands.CommandInjectable");
         var resolveAsInjectable = IoC.Resolve<ICommandInjectable>("Commands.CommandInjectable");
         var resolveAsClass = IoC.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
@@ -46,12 +54,6 @@ public class InjectableCommandTests
     [Fact]
     public void RegisterActionsStart_ResolvesCorrectlyWithOrder()
     {
-        ICommand registerInjectable = new RegisterDependencyCommandInjectableCommand();
-        registerInjectable.Execute();
-
-        ICommand registerStart = new RegisterIoCDependencyActionsStart();
-        registerStart.Execute();
-
         var internalCommandMock = new Mock<ICommand>();
         var commandQueue = new Queue<ICommand>();
 
@@ -65,20 +67,17 @@ public class InjectableCommandTests
         Assert.NotNull(resolvedCommand);
         
         resolvedCommand.Execute();
-
         Assert.Single(commandQueue);
     }
 
     [Fact]
     public void RegisterActionsStop_ResolvesCorrectlyWithOrder_AndRunsInConstantTime()
     {
-        ICommand registerStop = new RegisterIoCDependencyActionsStop();
-        registerStop.Execute();
-
         var injectable = new CommandInjectableCommand();
         var movingMock = new Mock<ICommand>();
         injectable.Inject(movingMock.Object);
 
+        // 1. Проверяем, что до остановки команда выполняется
         injectable.Execute();
         movingMock.Verify(m => m.Execute(), Times.Once);
 
@@ -87,13 +86,15 @@ public class InjectableCommandTests
             { "TargetCommand", injectable }
         };
 
+        // 2. Выполняем остановку
         var stopCommand = IoC.Resolve<ICommand>("Actions.Stop", order);
         Assert.NotNull(stopCommand);
-
         stopCommand.Execute();
 
+        // 3. Проверяем, что после остановки команда больше не выполняется
         injectable.Execute();
-        movingMock.Verify(m => m.Execute(), Times.Once);
         
+        // Ожидаем, что количество вызовов осталось равным 1 (только вызов ДО остановки)
+        movingMock.Verify(m => m.Execute(), Times.Once);
     }
 }

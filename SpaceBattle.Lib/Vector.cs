@@ -12,6 +12,9 @@ public class Vector
     public int Size => _coordinates.Length;
 
     public int GetCoordinate(int index) => _coordinates[index];
+    
+    public int X => GetCoordinate(0);        // ← НОВАЯ СТРОКА
+    public int Y => GetCoordinate(1);        // ← НОВАЯ СТРОКА
 
     public static Vector operator +(Vector a, Vector b)
     {
