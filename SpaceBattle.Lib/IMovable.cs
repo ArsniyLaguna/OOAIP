@@ -3,7 +3,12 @@ using SpaceBattle.Lib;
 namespace SpaceBattle.Lib;
 
 public interface IMovable : IGameObject
+namespace SpaceBattle.Lib
 {
-    Vector Velocity { get; }
-    void Update();
+    public interface IMovable
+    {
+        Vector Position { get; set; }
+        Vector Velocity { get; }
+        void Update();
+    }
 }
