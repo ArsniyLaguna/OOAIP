@@ -1,10 +1,5 @@
-using SpaceBattle.Lib;
-
 namespace SpaceBattle.Lib;
-
-public interface IMovable
+public interface IMovingObject : IGameObject
 {
-    Vector Position { get; set; }
     Vector Velocity { get; }
-    void Update();
 }
