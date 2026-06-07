@@ -1,6 +1,6 @@
 namespace SpaceBattle.Lib;
 
-public class Photon : IMovable
+public class Photon : IGameObject
 {
     private Vector _velocity;
 
