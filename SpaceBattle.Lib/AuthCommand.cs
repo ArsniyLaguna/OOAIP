@@ -2,22 +2,21 @@ namespace SpaceBattle.Lib;
 
 public class AuthCommand : ICommand
 {
-    private readonly IPlayer _player;
-    private readonly int _gameObjectId;
-    private readonly IAuthService _authService;
+    private readonly IAuthContext _context;
 
-    public AuthCommand(IPlayer player, int gameObjectId, IAuthService authService)
+    public AuthCommand(IAuthContext context)
     {
-        _player = player ?? throw new ArgumentNullException(nameof(player));
-        _gameObjectId = gameObjectId;
-        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public void Execute()
     {
-        if (!_authService.CheckAccess(_player, _gameObjectId))
+        bool isValid = (bool)IoC.Resolve<bool>("Auth.ValidateToken",
+            _context.Token, _context.GameId, _context.PlayerId);
+
+        if (!isValid)
         {
-            throw new UnauthorizedAccessException($"Игрок с ID '{_player.Id}' не имеет прав на объект с ID {_gameObjectId}.");
+            throw new Exception("Authorization failed: Invalid token or access denied.");
         }
     }
 }
