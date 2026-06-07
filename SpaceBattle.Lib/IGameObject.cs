@@ -1,2 +1,6 @@
 namespace SpaceBattle.Lib;
-public interface IGameObject { int Id { get; } }
+
+public interface IGameObject
+{
+    int Id { get; }
+}
