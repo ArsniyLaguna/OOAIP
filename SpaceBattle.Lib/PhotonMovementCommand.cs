@@ -1,16 +1,26 @@
-namespace SpaceBattle.Lib;
+using System;
+using SpaceBattle.Lib;
 
-public class PhotonMovementCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    private readonly IMovable _movable;
-
-    public PhotonMovementCommand(IMovable movable)
+    public class PhotonMovementCommand : ICommand
     {
-        _movable = movable ?? throw new ArgumentNullException(nameof(movable));
-    }
+        private readonly IMovable _movable;
 
-    public void Execute()
-    {
-        _movable.Update();
+        /// <summary>
+        /// Команда для перемещения объекта, реализующего IMovable.
+        /// </summary>
+        /// <param name="movable">Объект для перемещения.</param>
+        /// <exception cref="ArgumentNullException">Выбрасывается, если movable равен null.</exception>
+        public PhotonMovementCommand(IMovable movable)
+        {
+            // Используем оператор объединения с null для инициализации и выброса исключения
+            _movable = movable ?? throw new ArgumentNullException(nameof(movable));
+        }
+
+        public void Execute()
+        {
+            _movable.Update();
+        }
     }
 }

@@ -1,6 +1,7 @@
-namespace SpaceBattle.Lib;
-public interface IGameObject
+namespace SpaceBattle.Lib
 {
-    int Id { get; }
-    Vector Position { get; set; }
+    public interface IGameObject
+    {
+        int Id { get; }
+    }
 }

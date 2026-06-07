@@ -1,27 +1,28 @@
-namespace SpaceBattle.Lib;
+using System;
 
-public class Photon : IMovable
+namespace SpaceBattle.Lib
 {
-    private Vector _velocity;
-
-    public int Id { get; }
-    public Vector Position { get; set; }
-    public Vector Velocity => _velocity;
-
-    public Photon(int id, Vector position, Vector direction, int speed = 1)
+    public class Photon : IMovable, IGameObject
     {
-        if (speed <= 0)
-            throw new ArgumentException("Speed must be greater than 0", nameof(speed));
-        
-        Id = id;
-        Position = position;
-        _velocity = new Vector(direction.X * speed, direction.Y * speed);
-    }
+        private readonly Vector _velocity;
 
-    public void Update()
-    {
-        Position = new Vector(Position.X + _velocity.X, Position.Y + _velocity.Y);
-    }
+        public int Id { get; }
+        public Vector Position { get; set; }
+        public Vector Velocity => _velocity;
 
-    public Vector GetDirection() => _velocity;
+        public Photon(int id, Vector position, Vector direction, int speed = 1)
+        {
+            if (speed <= 0)
+                throw new ArgumentException("Speed must be greater than 0", nameof(speed));
+            
+            Id = id;
+            Position = position;
+            _velocity = new Vector(direction.X * speed, direction.Y * speed);
+        }
+
+        public void Update()
+        {
+            Position = new Vector(Position.X + _velocity.X, Position.Y + _velocity.Y);
+        }
+    }
 }

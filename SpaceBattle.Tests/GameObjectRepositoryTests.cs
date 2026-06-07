@@ -7,29 +7,28 @@ namespace SpaceBattle.Tests;
 public class GameObjectRepositoryTests
 {
 [Fact]
-public void Add_ValidGameObject_ShouldBeAddedToRepository()
-{
-    var repository = new GameObjectRepository();
-    // Используем IMovable вместо IGameObject
-    var gameObjectMock = new Mock<IMovable>(); 
-    gameObjectMock.SetupGet(g => g.Id).Returns(1);
-    
-    // Указываем тип Vector явно
-    gameObjectMock.SetupProperty<Vector>(g => g.Position, new Vector(10, 20));
+    public void Add_ValidGameObject_ShouldBeAddedToRepository()
+    {
+        var repository = new GameObjectRepository();
+        // Используем IGameObject, так как репозиторий оперирует объектами этого типа
+        var gameObjectMock = new Mock<IGameObject>(); 
+        gameObjectMock.SetupGet(g => g.Id).Returns(1);
+        
+        repository.Add(gameObjectMock.Object);
+        var result = repository.Get(1);
 
-    repository.Add(gameObjectMock.Object);
-    var result = repository.Get(1);
-
-    Assert.NotNull(result);
-    Assert.Equal(1, result.Id);
-}
+        Assert.NotNull(result);
+        Assert.Equal(1, result.Id);
+    }
 
     [Fact]
     public void Add_NullGameObject_ShouldThrowArgumentNullException()
     {
         var repository = new GameObjectRepository();
 
+#pragma warning disable CS8625
         Assert.Throws<ArgumentNullException>(() => repository.Add(null));
+#pragma warning restore CS8625 
     }
 
     [Fact]

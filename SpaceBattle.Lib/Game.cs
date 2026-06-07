@@ -26,8 +26,9 @@ public class Game
             {
                 command.Execute();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Command execution failed: {ex.Message}");
             }
         }
 

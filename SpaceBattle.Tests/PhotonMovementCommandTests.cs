@@ -55,7 +55,8 @@ public class PhotonMovementCommandTests
     public void Constructor_NullPhoton_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new PhotonMovementCommand(null));
+        // Добавлен оператор ! для подавления предупреждения Nullability
+        Assert.Throws<ArgumentNullException>(() => new PhotonMovementCommand(null!));
     }
 
     [Fact]

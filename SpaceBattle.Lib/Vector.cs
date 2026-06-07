@@ -1,66 +1,53 @@
-namespace SpaceBattle.Lib;
+using System;
+using System.Linq;
 
-public class Vector
+namespace SpaceBattle.Lib
 {
-    private readonly int[] _coordinates;
-
-    public Vector(params int[] coordinates)
+    public sealed class Vector
     {
-        _coordinates = coordinates ?? throw new ArgumentNullException(nameof(coordinates));
-    }
+        private readonly int[] _coordinates;
 
-    public int Size => _coordinates.Length;
+        public int Size => _coordinates.Length;
+        public int X => GetCoordinate(0);
+        public int Y => GetCoordinate(1);
 
-    public int GetCoordinate(int index) => _coordinates[index];
-    
-    public int X => GetCoordinate(0);        // ← НОВАЯ СТРОКА
-    public int Y => GetCoordinate(1);        // ← НОВАЯ СТРОКА
-
-    public static Vector operator +(Vector a, Vector b)
-    {
-        if (a.Size != b.Size)
-            throw new ArgumentException("векторы должны иметь одинаковую размерность.");
-
-        int[] result = new int[a.Size];
-        for (int i = 0; i < a.Size; i++)
+        public Vector(params int[] coordinates)
         {
-            result[i] = a._coordinates[i] + b._coordinates[i];
+            _coordinates = coordinates?.ToArray() ?? throw new ArgumentNullException(nameof(coordinates));
         }
-        return new Vector(result);
-    }
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is not Vector other || Size != other.Size)
-            return false;
-
-        for (int i = 0; i < Size; i++)
+        public int GetCoordinate(int index)
         {
-            if (_coordinates[i] != other._coordinates[i])
-                return false;
+            if (index < 0 || index >= Size)
+                throw new IndexOutOfRangeException("Индекс вне границ вектора.");
+            return _coordinates[index];
         }
-        return true;
-    }
 
-    public override int GetHashCode()
-    {
-        int hash = 17;
-        foreach (var coord in _coordinates)
+        public static implicit operator Vector((int, int) tuple) => new Vector(tuple.Item1, tuple.Item2);
+
+        // Перегрузка сложения
+        public static Vector operator +(Vector a, Vector b)
         {
-            hash = hash * 23 + coord.GetHashCode();
+            if (a.Size != b.Size)
+                throw new ArgumentException("Размерности векторов должны совпадать.");
+
+            return new Vector(a._coordinates.Zip(b._coordinates, (x, y) => x + y).ToArray());
         }
-        return hash;
-    }
 
-    public static bool operator ==(Vector? a, Vector? b)
-    {
-        if (ReferenceEquals(a, b)) return true;
-        if (a is null || b is null) return false;
-        return a.Equals(b);
-    }
+        public override bool Equals(object? obj) => obj is Vector other && Equals(other);
 
-    public static bool operator !=(Vector? a, Vector? b)
-    {
-        return !(a == b);
+        private bool Equals(Vector other) => _coordinates.SequenceEqual(other._coordinates);
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            foreach (var coord in _coordinates) hash.Add(coord);
+            return hash.ToHashCode();
+        }
+
+        public static bool operator ==(Vector? a, Vector? b) => Equals(a, b);
+        public static bool operator !=(Vector? a, Vector? b) => !Equals(a, b);
+
+        public override string ToString() => $"({string.Join(", ", _coordinates)})";
     }
 }
