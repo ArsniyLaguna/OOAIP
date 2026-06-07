@@ -11,11 +11,14 @@ public class InjectableCommandTests
 
 public InjectableCommandTests()
 {
-    // Вместо вызова Resolve("IoC.Clear"), вызываем напрямую статический метод:
+    // 1. Очистка
     IoC.Reset();
     
-    // Регистрируем возможность регистрации (если нужно)
-    // new RegisterIoCDependencyRegister().Execute(); 
+    // 2. Глобальная регистрация того, что нужно всем тестам
+    // Убедитесь, что эти классы существуют в вашем проекте
+    new RegisterDependencyCommandInjectableCommand().Execute();
+    new RegisterIoCDependencyActionsStart().Execute();
+    // new RegisterIoCDependencyActionsStop().Execute(); // если нужно для других тестов
 }
     
     [Fact]
