@@ -1,6 +1,7 @@
 using Moq;
 using SpaceBattle.Lib;
 using Xunit;
+using System;
 
 namespace SpaceBattle.Tests;
 
@@ -9,37 +10,19 @@ public class GameObjectMovementCommandTests
     [Fact]
     public void Execute_ShouldCallUpdateOnGameObject()
     {
-        var gameObjectMock = new Mock<IGameObject>();
-        gameObjectMock.SetupGet(g => g.Id).Returns(1);
+        // Используем IMovable, так как команда работает именно с ним (у него есть Update)
+        var gameObjectMock = new Mock<IMovable>();
         var command = new GameObjectMovementCommand(gameObjectMock.Object);
 
         command.Execute();
 
         gameObjectMock.Verify(g => g.Update(), Times.Once);
     }
-[Fact]
-public void Execute_ShouldCallUpdateOnGameObject()
-{
-    var gameObjectMock = new Mock<IMovable>(); 
-    
-    var command = new GameObjectMovementCommand(gameObjectMock.Object);
-
-    command.Execute();
-    
-    gameObjectMock.Verify(g => g.Update(), Times.Once);
-}
 
     [Fact]
     public void Execute_MultipleExecutions_ShouldCallUpdateMultipleTimes()
     {
-        var gameObjectMock = new Mock<IGameObject>();
-        gameObjectMock.SetupGet(g => g.Id).Returns(1);
-
-        var gameObjectMock = new Mock<IMovable>(); 
-        
-
-        gameObjectMock.SetupGet(g => g.Id).Returns(1); 
-        
+        var gameObjectMock = new Mock<IMovable>();
         var command = new GameObjectMovementCommand(gameObjectMock.Object);
 
         command.Execute();
@@ -53,32 +36,30 @@ public void Execute_ShouldCallUpdateOnGameObject()
     public void Constructor_NullGameObject_ShouldThrowArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => new GameObjectMovementCommand(null!));
-        Assert.Throws<ArgumentNullException>(() => new GameObjectMovementCommand(null));
     }
 
     [Fact]
-    public void Execute_WithSpaceship_ShouldCallUpdate()
+    public void Execute_WithSpaceship_ShouldUpdatePosition()
     {
-        var spaceship = new Spaceship(1, (10, 20));
         var spaceship = new Spaceship(1, new Vector(10, 20));
+        spaceship.SetVelocity(new Vector(1, 1));
         var command = new GameObjectMovementCommand(spaceship);
 
         command.Execute();
 
-        Assert.NotNull(command);
+        Assert.Equal(new Vector(11, 21), spaceship.Position);
     }
 
     [Fact]
-    public void Execute_WithPhoton_ShouldCallUpdate()
+    public void Execute_WithPhoton_ShouldUpdatePosition()
     {
-        var photon = new Photon(1, (0, 0), (1, 1), 5);
-        // Arrange
-        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 1), 5);
+        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 1), 1);
         var command = new GameObjectMovementCommand(photon);
         var initialPosition = photon.Position;
 
         command.Execute();
 
         Assert.NotEqual(initialPosition, photon.Position);
+        Assert.Equal(new Vector(1, 1), photon.Position);
     }
 }
