@@ -23,6 +23,10 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore SpaceBattle.slnx
+      # --- ДОБАВЬТЕ ЭТОТ ШАГ СЮДА ---
+    - name: Clean build artifacts
+      run: dotnet clean SpaceBattle.slnx
+    # -----------------------------
     - name: Build Solution
       run: dotnet build SpaceBattle.slnx --no-restore --configuration Debug
 
