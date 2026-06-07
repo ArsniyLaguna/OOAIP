@@ -49,7 +49,7 @@ public class GameObjectMovementCommandTests
     public void Execute_WithSpaceship_ShouldCallUpdate()
     {
         // Arrange
-        var spaceship = new Spaceship(1, (10, 20));
+        var spaceship = new Spaceship(1, new Vector(10, 20));
         var command = new GameObjectMovementCommand(spaceship);
 
         // Act
@@ -63,7 +63,7 @@ public class GameObjectMovementCommandTests
     public void Execute_WithPhoton_ShouldCallUpdate()
     {
         // Arrange
-        var photon = new Photon(1, (0, 0), (1, 1), 5);
+        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 1), 5);
         var command = new GameObjectMovementCommand(photon);
         var initialPosition = photon.Position;
 
