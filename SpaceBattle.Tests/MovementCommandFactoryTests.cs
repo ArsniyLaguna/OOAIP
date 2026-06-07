@@ -9,7 +9,7 @@ public class MovementCommandFactoryTests
     public void Constructor_NullRepository_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new MovementCommandFactory(null));
+        Assert.Throws<ArgumentNullException>(() => new MovementCommandFactory(null!));
     }
 
     [Fact]
