@@ -1,6 +1,6 @@
 namespace SpaceBattle.Lib;
 
-public class Spaceship : IGameObject, IMovable
+public class Spaceship : IMovable
 {
     private int _nextPhotonId = 1;
     private Vector _velocity;
