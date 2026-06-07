@@ -6,20 +6,17 @@ namespace SpaceBattle.Tests;
 
 public class GameObjectMovementCommandTests
 {
-    [Fact]
-    public void Execute_ShouldCallUpdateOnGameObject()
-    {
-        // Arrange
-        var gameObjectMock = new Mock<IGameObject>();
-        gameObjectMock.SetupGet(g => g.Id).Returns(1);
-        var command = new GameObjectMovementCommand(gameObjectMock.Object);
+[Fact]
+public void Execute_ShouldCallUpdateOnGameObject()
+{
+    var gameObjectMock = new Mock<IMovable>(); 
+    
+    var command = new GameObjectMovementCommand(gameObjectMock.Object);
 
-        // Act
-        command.Execute();
-
-        // Assert
-        gameObjectMock.Verify(g => g.Update(), Times.Once);
-    }
+    command.Execute();
+    
+    gameObjectMock.Verify(g => g.Update(), Times.Once);
+}
 
     [Fact]
     public void Execute_MultipleExecutions_ShouldCallUpdateMultipleTimes()
