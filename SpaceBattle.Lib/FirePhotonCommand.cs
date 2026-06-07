@@ -3,20 +3,19 @@ namespace SpaceBattle.Lib;
 public class FirePhotonCommand : ICommand
 {
     private readonly Spaceship _spaceship;
-    private readonly (int X, int Y) _direction;
+    private readonly Vector _direction;
     private readonly IGameObjectRepository _repository;
 
-    public FirePhotonCommand(Spaceship spaceship, (int X, int Y) direction, IGameObjectRepository repository)
+    public FirePhotonCommand(Spaceship spaceship, Vector direction, IGameObjectRepository repository)
     {
         _spaceship = spaceship ?? throw new ArgumentNullException(nameof(spaceship));
-        _direction = direction;
+        _direction = direction ?? throw new ArgumentNullException(nameof(direction));
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
     public void Execute()
     {
-        var direction = new Vector(_direction.X, _direction.Y);
-        var photon = _spaceship.FirePhoton(direction);
+        var photon = _spaceship.FirePhoton(_direction);
         _repository.Add(photon);
     }
 }
