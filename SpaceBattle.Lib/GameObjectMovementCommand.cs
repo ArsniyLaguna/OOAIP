@@ -1,19 +1,20 @@
-namespace SpaceBattle.Lib;
+using System;
+using SpaceBattle.Lib;
 
-public class GameObjectMovementCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    private readonly IGameObject _gameObject;
-
-    public GameObjectMovementCommand(IGameObject gameObject)
-    private readonly IMovable _movable;
-    
-    public GameObjectMovementCommand(IMovable movable)
+    public class GameObjectMovementCommand : ICommand
     {
-        _movable = movable ?? throw new ArgumentNullException(nameof(movable));
-    }
+        private readonly IMovable _movable;
 
-    public void Execute()
-    {
-        _movable.Update();
+        public GameObjectMovementCommand(IMovable movable)
+        {
+            _movable = movable ?? throw new ArgumentNullException(nameof(movable));
+        }
+
+        public void Execute()
+        {
+            _movable.Update();
+        }
     }
 }
