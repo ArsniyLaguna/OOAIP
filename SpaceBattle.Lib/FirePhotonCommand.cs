@@ -1,3 +1,6 @@
+using System;
+using SpaceBattle.Lib;
+
 namespace SpaceBattle.Lib;
 
 public class FirePhotonCommand : ICommand
@@ -16,6 +19,7 @@ public class FirePhotonCommand : ICommand
     public void Execute()
     {
         var photon = _spaceship.FirePhoton(_direction);
+        
         _repository.Add(photon);
     }
 }

@@ -39,7 +39,7 @@ public void Execute_ShouldCallUpdateOnGameObject()
     [Fact]
     public void Constructor_NullGameObject_ShouldThrowArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new GameObjectMovementCommand(null));
+        Assert.Throws<ArgumentNullException>(() => new GameObjectMovementCommand(null!));
     }
 
     [Fact]

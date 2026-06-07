@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib;
 
 public class Photon : IMovable
 {
-    private Vector _velocity;
+    private readonly Vector _velocity;
 
     public int Id { get; }
     public Vector Position { get; set; }
@@ -22,6 +22,4 @@ public class Photon : IMovable
     {
         Position = new Vector(Position.X + _velocity.X, Position.Y + _velocity.Y);
     }
-
-    public Vector GetDirection() => _velocity;
 }
