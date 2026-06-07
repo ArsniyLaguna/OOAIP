@@ -9,28 +9,28 @@ public class RegisterIoCRotateTests
     [Fact]
     public void RegisterIoCDependencyRotateCommand_RegistersAndResolvesCorrectly()
     {
-        // 1. Очистка контейнера
+        // 1. Очистка контейнера, чтобы избежать конфликтов с другими тестами
         IoC.Reset();
-        
-        // 2. Подготовка объектов
-        var mockAdapter = new Mock<IRotatable>();
-        var mockUObject = new Mock<object>();
-        
-        // 3. Регистрируем адаптер как фабрику, которая принимает объект (uObject) 
-        // и возвращает готовый адаптер
-        IoC.Register("Adapters.IRotatable", args => {
-            // В args[0] придет объект, который мы передадим в RotateCommand
-            return mockAdapter.Object;
-        });
-        
-        // 4. Выполняем регистрацию самой команды Rotate
+
+        // 2. РЕГИСТРАЦИЯ КОМАНДЫ (инициализация контейнера)
+        // Команда должна сама зарегистрировать в IoC ключ "Commands.Rotate"
         var registerCommand = new RegisterIoCDependencyRotateCommand();
         registerCommand.Execute();
-        
-        // 5. Act: Резолвим команду
-        // Передаем mockUObject.Object, который внутри RotateCommand будет использован для получения адаптера
+
+        // 3. Подготовка объекта (UObject), который будет вращаться
+        var mockUObject = new Mock<object>();
+
+        // 4. Важно: для работы RotateCommand, контейнер должен уметь создавать IRotatable (адаптер)
+        // Обычно RotateCommand внутри себя делает IoC.Resolve<IRotatable>("Adapters.IRotatable", uObject)
+        IoC.Register("Adapters.IRotatable", args => {
+            var mockAdapter = new Mock<IRotatable>();
+            return mockAdapter.Object;
+        });
+
+        // 5. Act: Резолвим команду Rotate
+        // Передаем uObject, так как именно он нужен команде для инициализации
         var resolvedCommand = IoC.Resolve<ICommand>("Commands.Rotate", mockUObject.Object);
-        
+
         // 6. Assert
         Assert.NotNull(resolvedCommand);
         Assert.IsType<RotateCommand>(resolvedCommand);
