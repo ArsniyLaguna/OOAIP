@@ -1,0 +1,16 @@
+using System;
+using System.Collections.Generic;
+
+namespace SpaceBattle.Lib;
+
+public class RegisterIoCDependencyActionsStop : ICommand
+{
+    public void Execute()
+    {
+        IoC.Register("Actions.Stop", (args) =>
+        {
+            var order = (IDictionary<string, object>)args[0];
+            return new ActionStopCommand(order);
+        });
+    }
+}

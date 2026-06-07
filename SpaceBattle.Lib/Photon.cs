@@ -1,29 +1,29 @@
 namespace SpaceBattle.Lib;
 
 public class Photon : IGameObject
+public class Photon : IMovable
 {
-    private readonly int _speed;
-    private (int X, int Y) _direction;
+    private Vector _velocity;
 
     public int Id { get; }
-    public (int X, int Y) Position { get; set; }
+    public Vector Position { get; set; }
+    public Vector Velocity => _velocity;
 
     public Photon(int id, (int X, int Y) position, (int X, int Y) direction, int speed = 1)
+    public Photon(int id, Vector position, Vector direction, int speed = 1)
     {
         if (speed <= 0)
-            throw new ArgumentException("Speed must be positive", nameof(speed));
-
+            throw new ArgumentException("Speed must be greater than 0", nameof(speed));
+        
         Id = id;
         Position = position;
-        _direction = direction;
-        _speed = speed;
+        _velocity = new Vector(direction.X * speed, direction.Y * speed);
     }
 
     public void Update()
     {
-        Position = (Position.X + _direction.X * _speed, Position.Y + _direction.Y * _speed);
+        Position = new Vector(Position.X + _velocity.X, Position.Y + _velocity.Y);
     }
 
-    public (int X, int Y) GetDirection() => _direction;
-    public int GetSpeed() => _speed;
+    public Vector GetDirection() => _velocity;
 }
