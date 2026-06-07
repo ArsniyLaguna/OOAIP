@@ -1,9 +1,6 @@
-using System;
-using SpaceBattle.Lib;
-
 namespace SpaceBattle.Lib;
 
-public class Photon : IMovable, IGameObject
+public class Photon : IMovable
 {
     private readonly Vector _velocity;
 
@@ -18,7 +15,6 @@ public class Photon : IMovable, IGameObject
         
         Id = id;
         Position = position;
-
         _velocity = new Vector(direction.X * speed, direction.Y * speed);
     }
 
