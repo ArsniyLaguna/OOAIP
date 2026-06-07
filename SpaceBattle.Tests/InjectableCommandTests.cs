@@ -8,6 +8,17 @@ namespace SpaceBattle.Tests;
 
 public class InjectableCommandTests
 {
+
+    public InjectableCommandTests()
+{
+    // 1. Очищаем старые зависимости, чтобы они не конфликтовали
+    IoC.Resolve<ICommand>("IoC.Clear").Execute();
+    
+    // 2. ВАЖНО: Нужно пере-зарегистрировать саму возможность регистрации
+    // Если у вас нет этой команды, добавьте её выполнение здесь
+    new RegisterIoCDependencyRegister().Execute(); 
+}
+    
     [Fact]
     public void InjectableCommand_WithInjectedCommand_ExecutesCorrectly()
     {
