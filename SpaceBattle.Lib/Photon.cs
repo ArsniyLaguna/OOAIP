@@ -2,7 +2,7 @@ using System;
 
 namespace SpaceBattle.Lib
 {
-    public class Photon : IMovable
+    public class Photon : IMovable, IGameObject
     {
         private readonly Vector _velocity;
 
