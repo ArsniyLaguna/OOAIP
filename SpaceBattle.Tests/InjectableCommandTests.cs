@@ -9,14 +9,13 @@ namespace SpaceBattle.Tests;
 public class InjectableCommandTests
 {
 
-    public InjectableCommandTests()
+public InjectableCommandTests()
 {
-    // 1. Очищаем старые зависимости, чтобы они не конфликтовали
-    IoC.Resolve<ICommand>("IoC.Clear").Execute();
+    // Вместо вызова Resolve("IoC.Clear"), вызываем напрямую статический метод:
+    IoC.Reset();
     
-    // 2. ВАЖНО: Нужно пере-зарегистрировать саму возможность регистрации
-    // Если у вас нет этой команды, добавьте её выполнение здесь
-    new RegisterIoCDependencyRegister().Execute(); 
+    // Регистрируем возможность регистрации (если нужно)
+    // new RegisterIoCDependencyRegister().Execute(); 
 }
     
     [Fact]
