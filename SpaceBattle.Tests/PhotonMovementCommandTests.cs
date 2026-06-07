@@ -9,7 +9,7 @@ public class PhotonMovementCommandTests
     public void Execute_ShouldMovePhoton()
     {
         // Arrange
-        var photon = new Photon(1, (0, 0), (1, 1), 5);
+        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 1), 5);
         var command = new PhotonMovementCommand(photon);
         var initialPosition = photon.Position;
 
@@ -17,7 +17,7 @@ public class PhotonMovementCommandTests
         command.Execute();
 
         // Assert
-        Assert.Equal((5, 5), photon.Position);
+        Assert.Equal(new Vector(5, 5), photon.Position);
         Assert.NotEqual(initialPosition, photon.Position);
     }
 
@@ -25,7 +25,7 @@ public class PhotonMovementCommandTests
     public void Execute_MultipleExecutions_ShouldMovePhotonMultipleTimes()
     {
         // Arrange
-        var photon = new Photon(1, (0, 0), (2, 0), 3);
+        var photon = new Photon(1, new Vector(0, 0), new Vector(2, 0), 3);
         var command = new PhotonMovementCommand(photon);
 
         // Act
@@ -34,21 +34,21 @@ public class PhotonMovementCommandTests
         command.Execute();
 
         // Assert
-        Assert.Equal((18, 0), photon.Position);
+        Assert.Equal(new Vector(18, 0), photon.Position);
     }
 
     [Fact]
     public void Execute_NegativeDirection_ShouldMoveInNegativeDirection()
     {
         // Arrange
-        var photon = new Photon(1, (10, 10), (-1, -1), 2);
+        var photon = new Photon(1, new Vector(10, 10), new Vector(-1, -1), 2);
         var command = new PhotonMovementCommand(photon);
 
         // Act
         command.Execute();
 
         // Assert
-        Assert.Equal((8, 8), photon.Position);
+        Assert.Equal(new Vector(8, 8), photon.Position);
     }
 
     [Fact]
@@ -63,13 +63,13 @@ public class PhotonMovementCommandTests
     public void Execute_WithZeroDirection_ShouldNotMove()
     {
         // Arrange
-        var photon = new Photon(1, (5, 5), (0, 0), 10);
+        var photon = new Photon(1, new Vector(5, 5), new Vector(0, 0), 10);
         var command = new PhotonMovementCommand(photon);
 
         // Act
         command.Execute();
 
         // Assert
-        Assert.Equal((5, 5), photon.Position);
+        Assert.Equal(new Vector(5, 5), photon.Position);
     }
 }

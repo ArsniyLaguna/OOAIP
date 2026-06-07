@@ -5,12 +5,15 @@ public class GameObjectMovementCommand : ICommand
     private readonly IGameObject _gameObject;
 
     public GameObjectMovementCommand(IGameObject gameObject)
+    private readonly IMovable _movable;
+    
+    public GameObjectMovementCommand(IMovable movable)
     {
-        _gameObject = gameObject ?? throw new ArgumentNullException(nameof(gameObject));
+        _movable = movable ?? throw new ArgumentNullException(nameof(movable));
     }
 
     public void Execute()
     {
-        _gameObject.Update();
+        _movable.Update();
     }
 }
