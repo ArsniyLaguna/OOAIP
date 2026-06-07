@@ -53,31 +53,26 @@ public InjectableCommandTests()
         Assert.NotNull(resolveAsClass);
     }
 
-    [Fact]
-    public void RegisterActionsStart_ResolvesCorrectlyWithOrder()
+[Fact]
+public void RegisterActionsStart_ResolvesCorrectlyWithOrder()
+{
+    // Инициализация данных
+    var internalCommandMock = new Mock<ICommand>();
+    var commandQueue = new Queue<ICommand>();
+
+    IDictionary<string, object> order = new Dictionary<string, object>
     {
-        ICommand registerInjectable = new RegisterDependencyCommandInjectableCommand();
-        registerInjectable.Execute();
+        { "Command", internalCommandMock.Object },
+        { "Queue", commandQueue }
+    };
 
-        ICommand registerStart = new RegisterIoCDependencyActionsStart();
-        registerStart.Execute();
-
-        var internalCommandMock = new Mock<ICommand>();
-        var commandQueue = new Queue<ICommand>();
-
-        IDictionary<string, object> order = new Dictionary<string, object>
-        {
-            { "Command", internalCommandMock.Object },
-            { "Queue", commandQueue }
-        };
-
-        var resolvedCommand = IoC.Resolve<ICommand>("Actions.Start", order);
-        Assert.NotNull(resolvedCommand);
-        
-        resolvedCommand.Execute();
-
-        Assert.Single(commandQueue);
-    }
+    // Вызываем Resolve. Теперь контейнер чист и стратегии зарегистрированы в конструкторе.
+    var resolvedCommand = IoC.Resolve<ICommand>("Actions.Start", order);
+    
+    Assert.NotNull(resolvedCommand);
+    resolvedCommand.Execute();
+    Assert.Single(commandQueue);
+}
 
     [Fact]
     public void RegisterActionsStop_ResolvesCorrectlyWithOrder_AndRunsInConstantTime()
