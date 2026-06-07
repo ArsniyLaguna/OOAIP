@@ -15,7 +15,10 @@ public class MovementCommandFactory
         
         foreach (var gameObject in _repository.GetAll())
         {
-            commands.Add(new GameObjectMovementCommand(gameObject));
+            if (gameObject is IMovable movable)
+            {
+                commands.Add(new GameObjectMovementCommand(movable));
+            }
         }
 
         return commands;
@@ -27,6 +30,9 @@ public class MovementCommandFactory
         if (gameObject == null)
             throw new ArgumentException($"Game object with id {gameObjectId} not found", nameof(gameObjectId));
 
-        return new GameObjectMovementCommand(gameObject);
+        if (gameObject is IMovable movable)
+            return new GameObjectMovementCommand(movable);
+
+        throw new ArgumentException($"Game object with id {gameObjectId} is not movable", nameof(gameObjectId));
     }
 }
