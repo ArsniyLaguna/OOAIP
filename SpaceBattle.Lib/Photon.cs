@@ -3,7 +3,7 @@ using SpaceBattle.Lib;
 
 namespace SpaceBattle.Lib
 {
-    public class Photon : IMovable
+    public class Photon : IMovable, IGameObject
     {
         private Vector _velocity;
 
