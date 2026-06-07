@@ -1,23 +1,26 @@
-namespace SpaceBattle.Lib;
+using System;
+using SpaceBattle.Lib;
 
-public class FirePhotonCommand : ICommand
+namespace SpaceBattle.Lib
 {
-    private readonly Spaceship _spaceship;
-    private readonly Vector _direction;
-    private readonly IGameObjectRepository _repository;
-
-    public FirePhotonCommand(Spaceship spaceship, (int X, int Y) direction, IGameObjectRepository repository)
-    public FirePhotonCommand(Spaceship spaceship, Vector direction, IGameObjectRepository repository)
+    public class FirePhotonCommand : ICommand
     {
-        _spaceship = spaceship ?? throw new ArgumentNullException(nameof(spaceship));
-        _direction = direction ?? throw new ArgumentNullException(nameof(direction));
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-    }
+        private readonly Spaceship _spaceship;
+        private readonly Vector _direction;
+        private readonly IGameObjectRepository _repository;
 
-    public void Execute()
-    {
-        var photon = _spaceship.FirePhoton(_direction);
+        public FirePhotonCommand(Spaceship spaceship, Vector direction, IGameObjectRepository repository)
+        {
+            _spaceship = spaceship ?? throw new ArgumentNullException(nameof(spaceship));
+            _direction = direction ?? throw new ArgumentNullException(nameof(direction));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
 
-        _repository.Add(photon);
+        public void Execute()
+        {
+            var photon = _spaceship.FirePhoton(_direction);
+            
+            _repository.Add(photon);
+        }
     }
 }
