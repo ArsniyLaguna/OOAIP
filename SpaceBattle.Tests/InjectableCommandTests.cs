@@ -8,17 +8,17 @@ namespace SpaceBattle.Tests;
 
 public class InjectableCommandTests
 {
-    public InjectableCommandTests()
-    {
-        // 1. Очищаем состояние IoC перед каждым тестом для полной изоляции
-        IoC.Reset();
-        
-        // 2. Глобальная регистрация зависимостей
-        new RegisterDependencyCommandInjectableCommand().Execute();
-        new RegisterIoCDependencyActionsStart().Execute();
-        new RegisterIoCDependencyActionsStop().Execute(); 
-    }
+public InjectableCommandTests()
+{
+    IoC.Reset();
     
+
+    new RegisterIoCDependencyCommand().Execute(); 
+    
+    new RegisterDependencyCommandInjectableCommand().Execute();
+    new RegisterIoCDependencyActionsStart().Execute();
+    new RegisterIoCDependencyActionsStop().Execute(); 
+}
     [Fact]
     public void InjectableCommand_WithInjectedCommand_ExecutesCorrectly()
     {
