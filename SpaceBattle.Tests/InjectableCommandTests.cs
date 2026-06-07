@@ -12,9 +12,6 @@ public InjectableCommandTests()
 {
     IoC.Reset();
     
-
-    new RegisterIoCDependencyCommand().Execute(); 
-    
     new RegisterDependencyCommandInjectableCommand().Execute();
     new RegisterIoCDependencyActionsStart().Execute();
     new RegisterIoCDependencyActionsStop().Execute(); 
