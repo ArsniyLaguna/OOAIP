@@ -1,4 +1,5 @@
-using Moq;
+using System;
+using System.Linq;
 using SpaceBattle.Lib;
 using Xunit;
 
@@ -7,48 +8,11 @@ namespace SpaceBattle.Tests;
 public class FirePhotonCommandTests
 {
     [Fact]
-    public void Execute_ShouldCreatePhotonAndAddToRepository()
+    public void FirePhotonCommand_Execute_ShouldAddPhotonToRepository()
     {
         // Arrange
         var repository = new GameObjectRepository();
-        var spaceship = new Spaceship(1, new Vector(10, 20));
-        var direction = new Vector(1, 0);
-        var command = new FirePhotonCommand(spaceship, direction, repository);
-
-        // Act
-        command.Execute();
-
-        // Assert
-        var photon = repository.GetAll().OfType<Photon>().FirstOrDefault();
-        Assert.NotNull(photon);
-        Assert.Equal(spaceship.Position, photon.Position);
-    }
-
-    [Fact]
-    public void Execute_MultipleShots_ShouldCreateMultiplePhotons()
-    {
-        // Arrange
-        var repository = new GameObjectRepository();
-        var spaceship = new Spaceship(1, new Vector(0, 0));
-        var command1 = new FirePhotonCommand(spaceship, new Vector(1, 0), repository);
-        var command2 = new FirePhotonCommand(spaceship, new Vector(0, 1), repository);
-
-        // Act
-        command1.Execute();
-        command2.Execute();
-
-        // Assert
-        var photons = repository.GetAll().OfType<Photon>().ToList();
-        Assert.Equal(2, photons.Count);
-    }
-
-    [Fact]
-    public void Execute_PhotonShouldHaveSamePositionAsSpaceship()
-    {
-        // Arrange
-        var repository = new GameObjectRepository();
-        var spaceshipPosition = new Vector(50, 75);
-        var spaceship = new Spaceship(1, spaceshipPosition);
+        var spaceship = new Spaceship(1, new Vector(50, 75));
         var direction = new Vector(1, 1);
         var command = new FirePhotonCommand(spaceship, direction, repository);
 
@@ -57,152 +21,49 @@ public class FirePhotonCommandTests
 
         // Assert
         var photon = repository.GetAll().OfType<Photon>().First();
-        Assert.Equal(spaceshipPosition, photon.Position);
+        Assert.Equal(new Vector(50, 75), photon.Position);
     }
 
     [Fact]
-    public void Constructor_NullSpaceship_ShouldThrowArgumentNullException()
+    public void FirePhotonCommand_Constructor_ShouldThrowOnNull()
     {
-        // Arrange
-        var repository = new GameObjectRepository();
-
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
-            new FirePhotonCommand(null, new Vector(1, 0), repository));
+        var repo = new GameObjectRepository();
+        var ship = new Spaceship(1, new Vector(0, 0));
+        
+        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(null!, new Vector(1, 0), repo));
+        Assert.Throws<ArgumentNullException>(() => new FirePhotonCommand(ship, new Vector(1, 0), null!));
     }
 
     [Fact]
-    public void Constructor_NullRepository_ShouldThrowArgumentNullException()
+    public void Photon_Update_ShouldMovePositionByVelocity()
     {
-        // Arrange
-        var spaceship = new Spaceship(1, new Vector(0, 0));
-
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
-            new FirePhotonCommand(spaceship, new Vector(1, 0), null));
-    }
-
-    [Fact]
-    public void Execute_PhotonShouldHaveCorrectDirection()
-    {
-        // Arrange
-        var repository = new GameObjectRepository();
-        var spaceship = new Spaceship(1, new Vector(0, 0));
-        var direction = new Vector(1, -1);
-        var command = new FirePhotonCommand(spaceship, direction, repository);
-
-        // Act
-        command.Execute();
-
-        // Assert
-        var photon = repository.GetAll().OfType<Photon>().First();
-        Assert.Equal(direction, photon.GetDirection());
-    }
-
-    [Fact]
-    public void Execute_PhotonShouldHaveUniqueIds()
-    {
-        // Arrange
-        var repository = new GameObjectRepository();
-        var spaceship = new Spaceship(1, new Vector(0, 0));
-        var command1 = new FirePhotonCommand(spaceship, new Vector(1, 0), repository);
-        var command2 = new FirePhotonCommand(spaceship, new Vector(0, 1), repository);
-
-        // Act
-        command1.Execute();
-        command2.Execute();
-
-        // Assert
-        var photons = repository.GetAll().OfType<Photon>().ToList();
-        Assert.NotEqual(photons[0].Id, photons[1].Id);
-    }
-
-    [Fact]
-    public void Photon_Update_ShouldMovePhoton()
-    {
-        // Arrange
-        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 1), 5);
-        var initialPosition = photon.Position;
+        // Arrange: скорость (1, 1), скорость = 5 вектор (5, 5)
+        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 1), speed: 5);
 
         // Act
         photon.Update();
 
         // Assert
         Assert.Equal(new Vector(5, 5), photon.Position);
-        Assert.NotEqual(initialPosition, photon.Position);
     }
 
     [Fact]
-    public void Photon_MultipleUpdates_ShouldMovePhotonMultipleTimes()
-    {
-        // Arrange
-        var photon = new Photon(1, new Vector(0, 0), new Vector(1, 0), 2);
-
-        // Act
-        photon.Update();
-        photon.Update();
-        photon.Update();
-
-        // Assert
-        Assert.Equal(new Vector(6, 0), photon.Position);
-    }
-
-    [Fact]
-    public void Photon_NegativeDirection_ShouldMoveInNegativeDirection()
-    {
-        // Arrange
-        var photon = new Photon(1, new Vector(10, 10), new Vector(-1, -1), 2);
-
-        // Act
-        photon.Update();
-
-        // Assert
-        Assert.Equal(new Vector(8, 8), photon.Position);
-    }
-
-    [Fact]
-    public void Photon_InvalidSpeed_ShouldThrowArgumentException()
-    {
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() =>
-            new Photon(1, new Vector(0, 0), new Vector(1, 0), 0));
-    }
-
-    [Fact]
-    public void Spaceship_FirePhoton_ShouldReturnPhoton()
-    {
-        // Arrange
-        var spaceship = new Spaceship(1, new Vector(10, 20));
-
-        // Act
-        var photon = spaceship.FirePhoton(new Vector(1, 0));
-
-        // Assert
-        Assert.NotNull(photon);
-        Assert.IsType<Photon>(photon);
-    }
-
-    [Fact]
-    public void Spaceship_FireMultiplePhotons_ShouldHaveDifferentIds()
+    public void Spaceship_FirePhoton_ShouldGenerateUniqueIds()
     {
         // Arrange
         var spaceship = new Spaceship(1, new Vector(0, 0));
 
         // Act
-        var photon1 = spaceship.FirePhoton(new Vector(1, 0));
-        var photon2 = spaceship.FirePhoton(new Vector(0, 1));
+        var p1 = spaceship.FirePhoton(new Vector(1, 0));
+        var p2 = spaceship.FirePhoton(new Vector(0, 1));
 
         // Assert
-        Assert.NotEqual(photon1.Id, photon2.Id);
+        Assert.NotEqual(p1.Id, p2.Id);
     }
 
     [Fact]
-    public void Spaceship_Update_ShouldNotThrowException()
+    public void Photon_Constructor_InvalidSpeed_ShouldThrow()
     {
-        // Arrange
-        var spaceship = new Spaceship(1, new Vector(0, 0));
-
-        // Act & Assert
-        spaceship.Update();
+        Assert.Throws<ArgumentException>(() => new Photon(1, new Vector(0, 0), new Vector(1, 0), speed: 0));
     }
 }

@@ -1,9 +1,8 @@
-namespace SpaceBattle.Lib
+namespace SpaceBattle.Lib;
+
+public interface IMovable : IGameObject
 {
-    public interface IMovable
-    {
-        Vector Position { get; set; }
-        Vector Velocity { get; }
-        void Update();
-    }
+    Vector Position { get; set; }
+    Vector Velocity { get; }
+    void Update();
 }

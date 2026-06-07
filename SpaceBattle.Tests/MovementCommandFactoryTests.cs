@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using SpaceBattle.Lib;
 using Xunit;
 
@@ -9,7 +11,7 @@ public class MovementCommandFactoryTests
     public void Constructor_NullRepository_ShouldThrowArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new MovementCommandFactory(null));
+        Assert.Throws<ArgumentNullException>(() => new MovementCommandFactory(null!));
     }
 
     [Fact]
@@ -33,8 +35,10 @@ public class MovementCommandFactoryTests
         var repository = new GameObjectRepository();
         var obj1 = new Photon(1, new Vector(0, 0), new Vector(1, 0), 1);
         var obj2 = new Photon(2, new Vector(5, 5), new Vector(0, 1), 1);
-        repository.Add(obj1);
-        repository.Add(obj2);
+        
+        // Явное приведение, чтобы гарантировать соответствие типов репозиторию
+        repository.Add((IGameObject)obj1);
+        repository.Add((IGameObject)obj2);
         var factory = new MovementCommandFactory(repository);
 
         // Act
@@ -50,7 +54,7 @@ public class MovementCommandFactoryTests
         // Arrange
         var repository = new GameObjectRepository();
         var photon = new Photon(1, new Vector(0, 0), new Vector(1, 0), 1);
-        repository.Add(photon);
+        repository.Add((IGameObject)photon);
         var factory = new MovementCommandFactory(repository);
 
         // Act
@@ -79,8 +83,8 @@ public class MovementCommandFactoryTests
         var repository = new GameObjectRepository();
         var obj1 = new Photon(1, new Vector(0, 0), new Vector(1, 0), 2);
         var obj2 = new Photon(2, new Vector(0, 0), new Vector(0, 1), 3);
-        repository.Add(obj1);
-        repository.Add(obj2);
+        repository.Add((IGameObject)obj1);
+        repository.Add((IGameObject)obj2);
         var factory = new MovementCommandFactory(repository);
 
         // Act
@@ -101,7 +105,7 @@ public class MovementCommandFactoryTests
         // Arrange
         var repository = new GameObjectRepository();
         var spaceship = new Spaceship(1, new Vector(0, 0));
-        repository.Add(spaceship);
+        repository.Add((IGameObject)spaceship);
         var factory = new MovementCommandFactory(repository);
 
         // Act
@@ -118,8 +122,8 @@ public class MovementCommandFactoryTests
         var repository = new GameObjectRepository();
         var spaceship = new Spaceship(1, new Vector(10, 10));
         var photon = new Photon(2, new Vector(0, 0), new Vector(1, 1), 1);
-        repository.Add(spaceship);
-        repository.Add(photon);
+        repository.Add((IGameObject)spaceship);
+        repository.Add((IGameObject)photon);
         var factory = new MovementCommandFactory(repository);
 
         // Act

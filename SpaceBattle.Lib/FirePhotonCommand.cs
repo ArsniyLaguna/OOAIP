@@ -1,3 +1,6 @@
+using System;
+using SpaceBattle.Lib;
+
 namespace SpaceBattle.Lib;
 
 public class FirePhotonCommand : ICommand
