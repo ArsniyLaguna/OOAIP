@@ -10,11 +10,9 @@ public class GameObjectRepositoryTests
 public void Add_ValidGameObject_ShouldBeAddedToRepository()
 {
     var repository = new GameObjectRepository();
-    // Используем IMovable вместо IGameObject
     var gameObjectMock = new Mock<IMovable>(); 
     gameObjectMock.SetupGet(g => g.Id).Returns(1);
     
-    // Указываем тип Vector явно
     gameObjectMock.SetupProperty<Vector>(g => g.Position, new Vector(10, 20));
 
     repository.Add(gameObjectMock.Object);
@@ -29,7 +27,7 @@ public void Add_ValidGameObject_ShouldBeAddedToRepository()
     {
         var repository = new GameObjectRepository();
 
-        Assert.Throws<ArgumentNullException>(() => repository.Add(null));
+        Assert.Throws<ArgumentNullException>(() => repository.Add(null!));
     }
 
     [Fact]
