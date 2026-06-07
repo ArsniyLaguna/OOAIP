@@ -13,26 +13,26 @@ public class MovementCommandFactory
     {
         var commands = new List<ICommand>();
         
-    foreach (var gameObject in _repository.GetAll())
-    {
-    if (gameObject is IMovable movable)
-    {
-        commands.Add(new GameObjectMovementCommand(movable));
-    }
-    }
+        foreach (var gameObject in _repository.GetAll())
+        {
+            if (gameObject is IMovable movable)
+            {
+                commands.Add(new GameObjectMovementCommand(movable));
+            }
+        }
 
         return commands;
     }
 
     public ICommand CreateMovementCommand(int gameObjectId)
     {
-    var gameObject = _repository.Get(gameObjectId);
-    if (gameObject == null)
-    throw new ArgumentException($"Game object with id {gameObjectId} not found", nameof(gameObjectId));
+        var gameObject = _repository.Get(gameObjectId);
+        if (gameObject == null)
+            throw new ArgumentException($"Game object with id {gameObjectId} not found", nameof(gameObjectId));
 
-    if (gameObject is IMovable movable)
-    return new GameObjectMovementCommand(movable);
+        if (gameObject is IMovable movable)
+            return new GameObjectMovementCommand(movable);
 
-throw new ArgumentException($"Game object with id {gameObjectId} is not movable", nameof(gameObjectId));
+        throw new ArgumentException($"Game object with id {gameObjectId} is not movable", nameof(gameObjectId));
     }
 }
