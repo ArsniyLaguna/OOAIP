@@ -1,5 +1,4 @@
 using Xunit;
-using App;
 using SpaceBattle.Lib;
 
 namespace SpaceBattle.Tests;
@@ -11,22 +10,15 @@ public class TestAuthContext : IAuthContext
     public string PlayerId { get; set; } = string.Empty;
 }
 
-public class AuthTests : IDisposable
+public class AuthTests
 {
-    public AuthTests()
-    {
-        new App.Scopes.InitCommand().Execute();
-        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Clear").Execute();
-    }
-
-    public void Dispose()
-    {
-        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Clear").Execute();
-    }
-
     [Fact]
     public void AuthCommand_WithValidToken_ExecutesWithoutException()
     {
+        IoC.Reset();
+
+        new RegisterIoCDependencyAuth().Execute();
+
         var context = new TestAuthContext
         {
             Token = "valid_token",
@@ -34,15 +26,17 @@ public class AuthTests : IDisposable
             PlayerId = "player_1"
         };
 
-        var authCmd = Ioc.Resolve<App.ICommand>("Actions.Auth", context);
-
+        var authCmd = IoC.Resolve<ICommand>("Commands.Auth", context);
         var exception = Record.Exception(() => authCmd.Execute());
+
         Assert.Null(exception);
     }
 
     [Fact]
     public void AuthCommand_WithEmptyToken_ThrowsException()
     {
+        IoC.Reset();
+
         new RegisterIoCDependencyAuth().Execute();
 
         var context = new TestAuthContext
@@ -52,7 +46,7 @@ public class AuthTests : IDisposable
             PlayerId = "player_1"
         };
 
-        var authCmd = Ioc.Resolve<App.ICommand>("Actions.Auth", context);
+        var authCmd = IoC.Resolve<ICommand>("Commands.Auth", context);
 
         Assert.Throws<Exception>(() => authCmd.Execute());
     }
