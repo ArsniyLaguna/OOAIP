@@ -2,22 +2,15 @@ namespace SpaceBattle.Lib;
 
 public class MoveCommand : ICommand
 {
-    private readonly IMovable _movable;
+    private readonly IMovingObject _obj;
 
-    public MoveCommand(IMovable movable)
+    public MoveCommand(IMovingObject obj)
     {
-        _movable = movable;
+        _obj = obj;
     }
 
     public void Execute()
     {
-        try
-        {
-            _movable.Position += _movable.Velocity;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Ошибка при выполнении команды движения.", ex);
-        }
+        _obj.Position = _obj.Position + _obj.Velocity;
     }
 }

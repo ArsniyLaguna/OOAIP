@@ -5,8 +5,12 @@ namespace SpaceBattle.Lib
 {
     public static class IoC
     {
-        // Используем один общий словарь для всех стратегий
         private static readonly Dictionary<string, Func<object[], object>> _strategies = new();
+
+        public static void Register(string key, Func<object[], object> strategy)
+        {
+            _strategies[key] = strategy;
+        }
 
         public static T Resolve<T>(string key, params object[] args)
         {
@@ -14,12 +18,7 @@ namespace SpaceBattle.Lib
             {
                 return (T)strategy(args);
             }
-            throw new Exception($"Зависимость '{key}' не зарегистрирована.");
-        }
-
-        public static void Register(string key, Func<object[], object> strategy)
-        {
-            _strategies[key] = strategy;
+            throw new Exception($"Зависимость '{key}' не найдена.");
         }
 
         public static void Reset() => _strategies.Clear();
