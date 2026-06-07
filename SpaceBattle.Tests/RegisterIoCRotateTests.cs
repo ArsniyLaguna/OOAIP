@@ -11,18 +11,12 @@ public class RegisterIoCRotateTests
     {
         IoC.Reset();
 
-        var mockAdapter = new Mock<IRotatable>();
-        var mockUObject = new Mock<object>();
-
-        IoC.Register("Adapters.IRotatable", args =>
-        {
-            return mockAdapter.Object;
-        });
+        IoC.Register("Adapters.IRotatable", args => new Mock<IRotatable>().Object);
 
         var registerCommand = new RegisterIoCDependencyRotateCommand();
         registerCommand.Execute();
 
-        var resolvedCommand = IoC.Resolve<ICommand>("Commands.Rotate", mockUObject.Object);
+        var resolvedCommand = IoC.Resolve<ICommand>("Commands.Rotate", new Mock<object>().Object);
 
         Assert.NotNull(resolvedCommand);
         Assert.IsType<RotateCommand>(resolvedCommand);
