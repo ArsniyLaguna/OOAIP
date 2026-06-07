@@ -10,10 +10,10 @@ public class InjectableCommandTests
 {
     public InjectableCommandTests()
     {
-        // Очищаем состояние IoC перед каждым тестом
+        // 1. Очищаем состояние IoC перед каждым тестом для полной изоляции
         IoC.Reset();
         
-        // Регистрируем базовые зависимости, нужные всем тестам
+        // 2. Глобальная регистрация зависимостей
         new RegisterDependencyCommandInjectableCommand().Execute();
         new RegisterIoCDependencyActionsStart().Execute();
         new RegisterIoCDependencyActionsStop().Execute(); 
@@ -42,7 +42,6 @@ public class InjectableCommandTests
     [Fact]
     public void RegisterCommandInjectable_ResolvesToAllRequiredTypes()
     {
-        // Регистрация уже прошла в конструкторе, повторно вызывать не нужно
         var resolveAsICommand = IoC.Resolve<ICommand>("Commands.CommandInjectable");
         var resolveAsInjectable = IoC.Resolve<ICommandInjectable>("Commands.CommandInjectable");
         var resolveAsClass = IoC.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
@@ -78,18 +77,24 @@ public class InjectableCommandTests
         var movingMock = new Mock<ICommand>();
         injectable.Inject(movingMock.Object);
 
+        // 1. Проверяем, что до остановки команда выполняется
+        injectable.Execute();
+        movingMock.Verify(m => m.Execute(), Times.Once);
+
         IDictionary<string, object> order = new Dictionary<string, object>
         {
             { "TargetCommand", injectable }
         };
 
+        // 2. Выполняем остановку
         var stopCommand = IoC.Resolve<ICommand>("Actions.Stop", order);
         Assert.NotNull(stopCommand);
-
         stopCommand.Execute();
+
+        // 3. Проверяем, что после остановки команда больше не выполняется
         injectable.Execute();
         
-        // Проверяем, что Execute() mock-объекта не был вызван повторно
+        // Ожидаем, что количество вызовов осталось равным 1 (только вызов ДО остановки)
         movingMock.Verify(m => m.Execute(), Times.Once);
     }
 }
